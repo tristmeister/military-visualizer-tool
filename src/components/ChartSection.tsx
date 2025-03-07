@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Treemap, LineChart, Line } from 'recharts';
-import { formatNumber, getRadarData, getBudgetData, getPersonnelData, getEquipmentData, getNuclearData, getHistoricalBudgetData, getHistoricalNukesData } from '@/lib/military-data';
+import { formatNumber, getRadarData, getBudgetData, getPersonnelData, getEquipmentData, getNuclearData, getHistoricalBudgetData, getHistoricalNukesData, militaryData } from '@/lib/military-data';
 import { StatCategory } from '@/lib/military-data';
 import { Plane, Shield, Anchor, AlertTriangle } from 'lucide-react';
 
@@ -290,23 +289,17 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                 stroke="#fff"
                 fill="#8884d8"
                 animationDuration={1500}
-                content={(props: any) => {
-                  const { x, y, width, height, name, flag, active, color } = props;
-                  return (
-                    <g>
-                      <rect x={x} y={y} width={width} height={height} style={{ fill: color }} />
-                      {width > 50 && height > 50 && (
-                        <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle" style={{ fill: '#fff' }}>
-                          {flag} {name}
-                          <tspan x={x + width / 2} y={y + height / 2 + 20} textAnchor="middle" dominantBaseline="middle">
-                            {formatNumber(active)}
-                          </tspan>
-                        </text>
-                      )}
-                    </g>
-                  );
-                }}
-              />
+              >
+                {personnelData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.color} 
+                    name={entry.name}
+                    flag={entry.flag}
+                    active={entry.active}
+                  />
+                ))}
+              </Treemap>
             </ResponsiveContainer>
           </div>
         </motion.div>
@@ -413,23 +406,17 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                 stroke="#fff"
                 fill="#8884d8"
                 animationDuration={1500}
-                content={(props: any) => {
-                  const { x, y, width, height, name, flag, budget, color } = props;
-                  return (
-                    <g>
-                      <rect x={x} y={y} width={width} height={height} style={{ fill: color }} />
-                      {width > 50 && height > 50 && (
-                        <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle" style={{ fill: '#fff' }}>
-                          {flag} {name}
-                          <tspan x={x + width / 2} y={y + height / 2 + 20} textAnchor="middle" dominantBaseline="middle">
-                            ${budget}B
-                          </tspan>
-                        </text>
-                      )}
-                    </g>
-                  );
-                }}
-              />
+              >
+                {budgetData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.color}
+                    name={entry.name}
+                    flag={entry.flag}
+                    budget={entry.budget}
+                  />
+                ))}
+              </Treemap>
             </ResponsiveContainer>
           </div>
         </motion.div>
@@ -659,23 +646,17 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                 nameKey="name"
                 stroke="#fff"
                 animationDuration={1500}
-                content={(props: any) => {
-                  const { x, y, width, height, name, flag, nukes, color } = props;
-                  return (
-                    <g>
-                      <rect x={x} y={y} width={width} height={height} style={{ fill: color }} />
-                      {width > 50 && height > 50 && (
-                        <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle" style={{ fill: '#fff' }}>
-                          {flag} {name}
-                          <tspan x={x + width / 2} y={y + height / 2 + 20} textAnchor="middle" dominantBaseline="middle">
-                            {formatNumber(nukes)}
-                          </tspan>
-                        </text>
-                      )}
-                    </g>
-                  );
-                }}
-              />
+              >
+                {nuclearData.filter(item => item.nukes > 0).map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.color}
+                    name={entry.name}
+                    flag={entry.flag}
+                    nukes={entry.nukes}
+                  />
+                ))}
+              </Treemap>
             </ResponsiveContainer>
           </div>
         </motion.div>
@@ -687,7 +668,6 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
     const historicalBudgetData = getHistoricalBudgetData(selectedCountries);
     const historicalNukesData = getHistoricalNukesData(selectedCountries);
 
-    // Generate dynamic line elements for each country
     const generateLines = (data: any, dataKey: string) => {
       if (!data || data.length === 0 || !data[0]) return null;
       
