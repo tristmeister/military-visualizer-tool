@@ -1,15 +1,18 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie } from 'recharts';
-import { formatNumber, getRadarData, getBudgetData, getPersonnelData, getEquipmentData, getNuclearData } from '@/lib/military-data';
+import { Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Treemap, LineChart, Line } from 'recharts';
+import { formatNumber, getRadarData, getBudgetData, getPersonnelData, getEquipmentData, getNuclearData, getHistoricalBudgetData, getHistoricalNukesData } from '@/lib/military-data';
 import { StatCategory } from '@/lib/military-data';
+import { Plane, Shield, Anchor, AlertTriangle } from 'lucide-react';
 
 interface ChartSectionProps {
   selectedCountries: string[];
   activeStat: StatCategory;
+  className?: string;
 }
 
-const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeStat }) => {
+const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeStat, className = "w-full" }) => {
   const renderCardHeader = (title: string) => (
     <h3 className="text-lg font-medium mb-4 flex items-center">
       <div className="w-1 h-5 bg-primary mr-2 rounded-full"></div>
@@ -46,7 +49,13 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
         animate="visible"
       >
         <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6">
-          {renderCardHeader("Military Capability Overview")}
+          {renderCardHeader(`Military Capability Overview (Limited to top 3 countries${selectedCountries.length > 3 ? ' for clarity' : ''})`)}
+          {selectedCountries.length > 3 && (
+            <div className="mb-4 p-2 bg-amber-50 rounded-lg flex items-center text-sm">
+              <AlertTriangle className="text-amber-500 w-4 h-4 mr-2" />
+              <span>Showing only the first 3 countries to reduce clutter. You can change your selection in the sidebar.</span>
+            </div>
+          )}
           <div className="h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart outerRadius={150} data={radarData}>
@@ -236,36 +245,68 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
         </motion.div>
 
         <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6">
-          {renderCardHeader("Personnel Distribution")}
+          {renderCardHeader("Personnel Per Million Population")}
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={personnelData}
-                  dataKey="active"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={130}
-                  label={(entry) => `${entry.flag} ${entry.name}: ${formatNumber(entry.active)}`}
-                  animationDuration={1500}
-                  animationBegin={200}
-                >
-                  {personnelData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.color} 
-                      stroke="rgba(255,255,255,0.3)"
-                      strokeWidth={2}
-                    />
-                  ))}
-                </Pie>
+              <BarChart data={personnelData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(120, 120, 120, 0.2)" />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
+                <YAxis 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
                 <Tooltip 
-                  formatter={(value: any) => [formatNumber(Number(value)), 'Personnel']}
+                  formatter={(value: any) => [`${value} per million`, 'Personnel Ratio']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
-              </PieChart>
+                <Bar 
+                  dataKey="perCapita" 
+                  name="Personnel per Million Citizens" 
+                  fill="#8884d8" 
+                  animationDuration={1500}
+                >
+                  {personnelData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6">
+          {renderCardHeader("Personnel Distribution")}
+          <div className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <Treemap
+                data={personnelData}
+                dataKey="active"
+                nameKey="name"
+                stroke="#fff"
+                fill="#8884d8"
+                animationDuration={1500}
+                content={(props: any) => {
+                  const { x, y, width, height, name, flag, active, color } = props;
+                  return (
+                    <g>
+                      <rect x={x} y={y} width={width} height={height} style={{ fill: color }} />
+                      {width > 50 && height > 50 && (
+                        <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle" style={{ fill: '#fff' }}>
+                          {flag} {name}
+                          <tspan x={x + width / 2} y={y + height / 2 + 20} textAnchor="middle" dominantBaseline="middle">
+                            {formatNumber(active)}
+                          </tspan>
+                        </text>
+                      )}
+                    </g>
+                  );
+                }}
+              />
             </ResponsiveContainer>
           </div>
         </motion.div>
@@ -323,36 +364,72 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
         </motion.div>
 
         <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6">
-          {renderCardHeader("Budget Distribution")}
+          {renderCardHeader("Defense Budget as % of GDP")}
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={budgetData}
-                  dataKey="budget"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={130}
-                  label={(entry) => `${entry.flag} ${entry.name}: $${entry.budget}B`}
+              <BarChart data={budgetData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(120, 120, 120, 0.2)" />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
+                <YAxis 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
+                <Tooltip 
+                  formatter={(value: any) => [`${value}%`, '% of GDP']}
+                  contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
+                />
+                <Legend />
+                <Bar 
+                  dataKey="gdpPercent" 
+                  name="Defense Budget (% of GDP)" 
                   animationDuration={1500}
-                  animationBegin={200}
                 >
                   {budgetData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={entry.color}
+                      fill={entry.color} 
                       stroke="rgba(255,255,255,0.3)"
                       strokeWidth={2}
                     />
                   ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value: any) => [`$${value}B`, 'Budget']}
-                  contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
-                />
-                <Legend />
-              </PieChart>
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6">
+          {renderCardHeader("Budget Distribution")}
+          <div className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <Treemap
+                data={budgetData}
+                dataKey="budget"
+                nameKey="name"
+                stroke="#fff"
+                fill="#8884d8"
+                animationDuration={1500}
+                content={(props: any) => {
+                  const { x, y, width, height, name, flag, budget, color } = props;
+                  return (
+                    <g>
+                      <rect x={x} y={y} width={width} height={height} style={{ fill: color }} />
+                      {width > 50 && height > 50 && (
+                        <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle" style={{ fill: '#fff' }}>
+                          {flag} {name}
+                          <tspan x={x + width / 2} y={y + height / 2 + 20} textAnchor="middle" dominantBaseline="middle">
+                            ${budget}B
+                          </tspan>
+                        </text>
+                      )}
+                    </g>
+                  );
+                }}
+              />
             </ResponsiveContainer>
           </div>
         </motion.div>
@@ -373,6 +450,9 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6 chart-container">
             {renderCardHeader("Aircraft")}
+            <div className="flex items-center justify-center mb-3">
+              <Plane className="w-10 h-10 text-blue-600" />
+            </div>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={equipmentData} layout="vertical">
@@ -409,6 +489,9 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
 
           <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6 chart-container">
             {renderCardHeader("Tanks & Armored Vehicles")}
+            <div className="flex items-center justify-center mb-3">
+              <Shield className="w-10 h-10 text-green-600" />
+            </div>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={equipmentData} layout="vertical">
@@ -446,6 +529,9 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
 
           <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6 chart-container">
             {renderCardHeader("Naval Vessels")}
+            <div className="flex items-center justify-center mb-3">
+              <Anchor className="w-10 h-10 text-blue-800" />
+            </div>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={equipmentData} layout="vertical">
@@ -567,33 +653,118 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
           {renderCardHeader("Nuclear Powers Distribution")}
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={nuclearData.filter(item => item.nukes > 0)}
-                  dataKey="nukes"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={130}
-                  label={(entry) => `${entry.flag} ${entry.name}: ${formatNumber(entry.nukes)}`}
-                  animationDuration={1500}
-                  animationBegin={200}
-                >
-                  {nuclearData.filter(item => item.nukes > 0).map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.color}
-                      stroke="rgba(255,255,255,0.3)"
-                      strokeWidth={2}
-                    />
-                  ))}
-                </Pie>
+              <Treemap
+                data={nuclearData.filter(item => item.nukes > 0)}
+                dataKey="nukes"
+                nameKey="name"
+                stroke="#fff"
+                animationDuration={1500}
+                content={(props: any) => {
+                  const { x, y, width, height, name, flag, nukes, color } = props;
+                  return (
+                    <g>
+                      <rect x={x} y={y} width={width} height={height} style={{ fill: color }} />
+                      {width > 50 && height > 50 && (
+                        <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle" style={{ fill: '#fff' }}>
+                          {flag} {name}
+                          <tspan x={x + width / 2} y={y + height / 2 + 20} textAnchor="middle" dominantBaseline="middle">
+                            {formatNumber(nukes)}
+                          </tspan>
+                        </text>
+                      )}
+                    </g>
+                  );
+                }}
+              />
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
+  const renderHistoricalCharts = () => {
+    const historicalBudgetData = getHistoricalBudgetData(selectedCountries);
+    const historicalNukesData = getHistoricalNukesData(selectedCountries);
+
+    // Generate dynamic line elements for each country
+    const generateLines = (data: any, dataKey: string) => {
+      if (!data || data.length === 0 || !data[0]) return null;
+      
+      const firstDataPoint = data[0];
+      const countries = selectedCountries.filter(country => 
+        firstDataPoint[country] !== undefined
+      );
+      
+      return countries.map(country => (
+        <Line
+          key={country}
+          type="monotone"
+          dataKey={country}
+          stroke={militaryData[country].color}
+          strokeWidth={2}
+          dot={{ r: 4, fill: militaryData[country].color }}
+          activeDot={{ r: 6 }}
+          name={`${militaryData[country].flag} ${country}`}
+        />
+      ));
+    };
+
+    return (
+      <motion.div 
+        className="space-y-6"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6">
+          {renderCardHeader("Defense Budget Trends 2018-2022 (Billions USD)")}
+          <div className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={historicalBudgetData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(120, 120, 120, 0.2)" />
+                <XAxis 
+                  dataKey="year" 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
+                <YAxis 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
+                <Tooltip 
+                  formatter={(value: any) => [`$${value}B`, 'Budget']}
+                  contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
+                />
+                <Legend />
+                {generateLines(historicalBudgetData, 'budget')}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6">
+          {renderCardHeader("Nuclear Stockpile Trends 1990-2022")}
+          <div className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={historicalNukesData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(120, 120, 120, 0.2)" />
+                <XAxis 
+                  dataKey="year" 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
+                <YAxis 
+                  tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                  axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                />
                 <Tooltip 
                   formatter={(value: any) => [formatNumber(Number(value)), 'Warheads']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
-              </PieChart>
+                {generateLines(historicalNukesData, 'nukes')}
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </motion.div>
@@ -630,13 +801,15 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
         return renderEquipmentCharts();
       case 'nuclear':
         return renderNuclearCharts();
+      case 'historical':
+        return renderHistoricalCharts();
       default:
         return renderOverviewCharts();
     }
   };
 
   return (
-    <div className="w-full">
+    <div className={className}>
       {renderContent()}
     </div>
   );

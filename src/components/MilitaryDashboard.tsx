@@ -5,14 +5,16 @@ import { ShieldAlert } from 'lucide-react';
 import CountrySelector from './CountrySelector';
 import ComparisonPanel from './ComparisonPanel';
 import ChartSection from './ChartSection';
+import StrengthsWeaknessesPanel from './StrengthsWeaknessesPanel';
 import { StatCategory } from '@/lib/military-data';
 
 const MilitaryDashboard: React.FC = () => {
   const [selectedCountries, setSelectedCountries] = useState<string[]>(
-    ['United States', 'China', 'Russia', 'United Kingdom', 'France', 'Germany']
+    ['United States', 'China', 'Russia']
   );
   const [activeStat, setActiveStat] = useState<StatCategory>('overview');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showStrengths, setShowStrengths] = useState(false);
 
   useEffect(() => {
     // Simulate loading for smoother animation
@@ -67,6 +69,17 @@ const MilitaryDashboard: React.FC = () => {
               Global Military Comparison
             </span>
           </motion.h1>
+          
+          <div className="flex items-center">
+            <motion.button
+              onClick={() => setShowStrengths(!showStrengths)}
+              className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {showStrengths ? 'Hide Analysis' : 'Show Strengths & Weaknesses'}
+            </motion.button>
+          </div>
         </div>
       </motion.header>
       
@@ -100,11 +113,24 @@ const MilitaryDashboard: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
+                className="flex gap-6"
               >
                 <ChartSection 
                   selectedCountries={selectedCountries} 
                   activeStat={activeStat} 
+                  className={showStrengths ? "w-3/4" : "w-full"}
                 />
+                
+                {showStrengths && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 50 }}
+                    className="w-1/4"
+                  >
+                    <StrengthsWeaknessesPanel selectedCountries={selectedCountries} />
+                  </motion.div>
+                )}
               </motion.div>
             </AnimatePresence>
           </motion.div>
