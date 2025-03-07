@@ -1,16 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { militaryData } from '@/lib/military-data';
 
 interface CountrySelectorProps {
   selectedCountries: string[];
   setSelectedCountries: (countries: string[]) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }
 
 const CountrySelector: React.FC<CountrySelectorProps> = ({ 
   selectedCountries, 
-  setSelectedCountries 
+  setSelectedCountries,
+  searchTerm,
+  setSearchTerm
 }) => {
   const handleToggleCountry = (country: string) => {
     if (selectedCountries.includes(country)) {
@@ -35,6 +39,10 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
     show: { opacity: 1, y: 0 }
   };
 
+  const filteredCountries = Object.keys(militaryData).filter(country => 
+    country.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">Countries</h3>
@@ -44,7 +52,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
         initial="hidden"
         animate="show"
       >
-        {Object.keys(militaryData).map((country, index) => {
+        {filteredCountries.map((country, index) => {
           const isSelected = selectedCountries.includes(country);
           return (
             <motion.div 

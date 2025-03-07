@@ -32,22 +32,22 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
               <motion.button
                 onClick={() => setActiveStat(category.id)}
                 className={`
-                  w-full flex items-center p-3 rounded-md text-left transition-all duration-300
+                  w-full flex items-center p-3 rounded-md text-left btn-skeuomorphic
                   ${activeStat === category.id 
-                    ? 'bg-muted text-foreground' 
-                    : 'hover:bg-card/50 text-muted-foreground'}
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'}
                 `}
                 whileHover={{ x: 2 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className={`mr-3 ${activeStat === category.id ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`mr-3 ${activeStat === category.id ? 'text-primary-foreground' : ''}`}>
                   {category.icon}
                 </div>
                 <span className="text-sm">{category.name}</span>
                 {activeStat === category.id && (
                   <motion.div 
                     layoutId="activeIndicator"
-                    className="ml-auto w-1 h-5 bg-primary rounded-full"
+                    className="ml-auto w-1 h-5 bg-secondary rounded-full"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

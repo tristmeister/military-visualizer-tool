@@ -64,12 +64,14 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				military: {
-					us: '#003f5c',
-					china: '#bc5090',
-					russia: '#ff6361',
-					uk: '#58508d',
-					france: '#ffa600',
-					germany: '#5a5a5a'
+					us: '#1E88E5',
+					china: '#E53935',
+					russia: '#5E35B1',
+					uk: '#43A047',
+					france: '#FB8C00',
+					germany: '#757575',
+					eu: '#26A69A',
+					japan: '#8E24AA'
 				}
 			},
 			borderRadius: {

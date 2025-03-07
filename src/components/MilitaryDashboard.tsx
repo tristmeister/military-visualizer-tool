@@ -1,20 +1,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Search } from 'lucide-react';
+import { ShieldAlert, Search, Map, ChevronRight } from 'lucide-react';
 import CountrySelector from './CountrySelector';
 import ComparisonPanel from './ComparisonPanel';
 import ChartSection from './ChartSection';
 import StrengthsWeaknessesPanel from './StrengthsWeaknessesPanel';
+import StorytellingArea from './StorytellingArea';
 import { StatCategory } from '@/lib/military-data';
 
 const MilitaryDashboard: React.FC = () => {
   const [selectedCountries, setSelectedCountries] = useState<string[]>(
-    ['United States', 'China', 'Russia']
+    ['United States', 'China', 'Russia', 'European Union']
   );
   const [activeStat, setActiveStat] = useState<StatCategory>('overview');
   const [isLoaded, setIsLoaded] = useState(false);
   const [showStrengths, setShowStrengths] = useState(false);
+  const [showStorytelling, setShowStorytelling] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     // Simulate loading for smoother animation
@@ -61,7 +64,7 @@ const MilitaryDashboard: React.FC = () => {
         >
           <div className="p-4 border-b border-border flex items-center">
             <ShieldAlert className="w-6 h-6 text-primary mr-2" />
-            <span className="font-bold tracking-tight">MILITARY.stats</span>
+            <span className="font-bold tracking-tight">GEO.WARRIOR</span>
           </div>
           
           <div className="p-4">
@@ -70,14 +73,18 @@ const MilitaryDashboard: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search countries..."
-                className="w-full bg-card border border-border rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full bg-muted border border-border rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             
             <div className="space-y-4">
               <CountrySelector 
                 selectedCountries={selectedCountries} 
-                setSelectedCountries={setSelectedCountries} 
+                setSelectedCountries={setSelectedCountries}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
               />
               
               <div className="pt-4">
@@ -89,14 +96,24 @@ const MilitaryDashboard: React.FC = () => {
             </div>
           </div>
           
-          <div className="mt-auto border-t border-border p-4">
+          <div className="mt-auto border-t border-border p-4 space-y-2">
             <motion.button
               onClick={() => setShowStrengths(!showStrengths)}
-              className={`w-full flex items-center justify-center p-2 rounded-md text-sm transition-all duration-300 ${showStrengths ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-card/80 text-foreground'}`}
+              className={`w-full flex items-center justify-center p-2 rounded-md text-sm btn-skeuomorphic ${showStrengths ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               {showStrengths ? 'Hide Analysis' : 'Show Strengths & Weaknesses'}
+            </motion.button>
+            
+            <motion.button
+              onClick={() => setShowStorytelling(!showStorytelling)}
+              className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <span>Storytelling Mode</span>
+              <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
             </motion.button>
           </div>
         </motion.div>
@@ -123,31 +140,44 @@ const MilitaryDashboard: React.FC = () => {
             
             <div className="flex-1 overflow-auto p-6">
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStat}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex gap-6 h-full"
-                >
-                  <ChartSection 
-                    selectedCountries={selectedCountries} 
-                    activeStat={activeStat} 
-                    className={showStrengths ? "w-3/4" : "w-full"}
-                  />
-                  
-                  {showStrengths && (
-                    <motion.div 
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 50 }}
-                      className="w-1/4"
-                    >
-                      <StrengthsWeaknessesPanel selectedCountries={selectedCountries} />
-                    </motion.div>
-                  )}
-                </motion.div>
+                {!showStorytelling ? (
+                  <motion.div
+                    key="comparison"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex gap-6 h-full"
+                  >
+                    <ChartSection 
+                      selectedCountries={selectedCountries} 
+                      activeStat={activeStat} 
+                      className={showStrengths ? "w-3/4" : "w-full"}
+                    />
+                    
+                    {showStrengths && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 50 }}
+                        className="w-1/4"
+                      >
+                        <StrengthsWeaknessesPanel selectedCountries={selectedCountries} />
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="storytelling"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full"
+                  >
+                    <StorytellingArea />
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
           </div>

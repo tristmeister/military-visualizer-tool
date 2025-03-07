@@ -1,4 +1,3 @@
-
 export type MilitaryData = {
   color: string;
   flag: string;
@@ -17,15 +16,35 @@ export type MilitaryData = {
   weaknesses: string[];
   historicalBudget: { year: number; value: number }[];
   historicalNukes: { year: number; value: number }[];
+  projections?: {
+    budget: { year: number; value: number }[];
+    personnel: { year: number; value: number }[];
+    nukes: { year: number; value: number }[];
+  };
 };
 
 export type CountryData = Record<string, MilitaryData>;
 
 export type StatCategory = 'overview' | 'personnel' | 'budget' | 'equipment' | 'nuclear' | 'historical';
 
+export type StoryChip = {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  category: 'economic' | 'geopolitical' | 'technological' | 'conflict';
+  impact: {
+    country: string;
+    metric: 'budget' | 'personnel' | 'nukes' | 'techIndex';
+    effect: 'increase' | 'decrease';
+    amount: number; // percentage change
+    startYear: number;
+  };
+};
+
 export const militaryData: CountryData = {
   'United States': {
-    color: '#003f5c',
+    color: '#1E88E5',
     flag: '🇺🇸',
     personnel: 1400000,
     reserve: 800000,
@@ -53,10 +72,30 @@ export const militaryData: CountryData = {
       { year: 2010, value: 6700 },
       { year: 2020, value: 5800 },
       { year: 2022, value: 5550 }
-    ]
+    ],
+    projections: {
+      budget: [
+        { year: 2023, value: 820 },
+        { year: 2025, value: 850 },
+        { year: 2030, value: 900 },
+        { year: 2035, value: 950 }
+      ],
+      personnel: [
+        { year: 2023, value: 1400000 },
+        { year: 2025, value: 1450000 },
+        { year: 2030, value: 1500000 },
+        { year: 2035, value: 1550000 }
+      ],
+      nukes: [
+        { year: 2023, value: 5500 },
+        { year: 2025, value: 5400 },
+        { year: 2030, value: 5200 },
+        { year: 2035, value: 5000 }
+      ]
+    }
   },
   'China': {
-    color: '#bc5090',
+    color: '#E53935',
     flag: '🇨🇳',
     personnel: 2035000,
     reserve: 510000,
@@ -84,10 +123,30 @@ export const militaryData: CountryData = {
       { year: 2010, value: 240 },
       { year: 2020, value: 320 },
       { year: 2022, value: 350 }
-    ]
+    ],
+    projections: {
+      budget: [
+        { year: 2023, value: 250 },
+        { year: 2025, value: 280 },
+        { year: 2030, value: 350 },
+        { year: 2035, value: 420 }
+      ],
+      personnel: [
+        { year: 2023, value: 2050000 },
+        { year: 2025, value: 2100000 },
+        { year: 2030, value: 2200000 },
+        { year: 2035, value: 2300000 }
+      ],
+      nukes: [
+        { year: 2023, value: 380 },
+        { year: 2025, value: 450 },
+        { year: 2030, value: 600 },
+        { year: 2035, value: 750 }
+      ]
+    }
   },
   'Russia': {
-    color: '#ff6361',
+    color: '#5E35B1',
     flag: '🇷🇺',
     personnel: 900000,
     reserve: 2000000,
@@ -115,7 +174,78 @@ export const militaryData: CountryData = {
       { year: 2010, value: 8000 },
       { year: 2020, value: 6800 },
       { year: 2022, value: 6257 }
-    ]
+    ],
+    projections: {
+      budget: [
+        { year: 2023, value: 65 },
+        { year: 2025, value: 70 },
+        { year: 2030, value: 85 },
+        { year: 2035, value: 100 }
+      ],
+      personnel: [
+        { year: 2023, value: 920000 },
+        { year: 2025, value: 950000 },
+        { year: 2030, value: 1000000 },
+        { year: 2035, value: 1050000 }
+      ],
+      nukes: [
+        { year: 2023, value: 6200 },
+        { year: 2025, value: 6100 },
+        { year: 2030, value: 6000 },
+        { year: 2035, value: 5900 }
+      ]
+    }
+  },
+  'European Union': {
+    color: '#26A69A',
+    flag: '🇪🇺',
+    personnel: 1400000,
+    reserve: 1500000,
+    budget: 280.0,
+    gdpPercent: 1.8,
+    aircraft: 3450,
+    tanks: 5000,
+    naval: 550,
+    nukes: 515, // France and UK combined
+    bases: 200,
+    techIndex: 8.5,
+    population: 447.7,
+    strengths: ['Economic power', 'Technological innovation', 'Diplomatic influence', 'Regional unity'],
+    weaknesses: ['Decision-making complexity', 'Varied national interests', 'Defense integration issues'],
+    historicalBudget: [
+      { year: 2018, value: 240 },
+      { year: 2019, value: 250 },
+      { year: 2020, value: 255 },
+      { year: 2021, value: 270 },
+      { year: 2022, value: 280 }
+    ],
+    historicalNukes: [
+      { year: 1990, value: 850 },
+      { year: 2000, value: 730 },
+      { year: 2010, value: 600 },
+      { year: 2020, value: 525 },
+      { year: 2022, value: 515 }
+    ],
+    projections: {
+      budget: [
+        { year: 2023, value: 295 },
+        { year: 2025, value: 320 },
+        { year: 2030, value: 380 },
+        { year: 2035, value: 420 }
+      ],
+      personnel: [
+        { year: 2023, value: 1420000 },
+        { year: 2025, value: 1450000 },
+        { year: 2030, value: 1500000 },
+        { year: 2035, value: 1550000 }
+      ],
+      nukes: [
+        { year: 2023, value: 515 },
+        { year: 2025, value: 515 },
+        { year: 2030, value: 515 },
+        { year: 2035, value: 515 }
+      ]
+    }
   },
   'United Kingdom': {
     color: '#58508d',
@@ -418,4 +548,120 @@ export const getStrengthsAndWeaknesses = (selectedCountries: string[]) => {
     weaknesses: militaryData[country].weaknesses,
     color: militaryData[country].color
   }));
+};
+
+export const getProjectionData = (selectedCountries: string[]) => {
+  const limitedCountries = selectedCountries.filter(country => 
+    ['United States', 'China', 'Russia', 'European Union'].includes(country)
+  );
+  
+  const projectionYears = [2023, 2025, 2030, 2035];
+  const projectionData: any[] = [];
+  
+  projectionYears.forEach(year => {
+    const yearData: any = { year };
+    
+    limitedCountries.forEach(country => {
+      const countryData = militaryData[country];
+      if (countryData.projections) {
+        // Budget projections
+        const budgetEntry = countryData.projections.budget.find(item => item.year === year);
+        if (budgetEntry) {
+          yearData[`${country}Budget`] = budgetEntry.value;
+          yearData[`${country}Color`] = countryData.color;
+        }
+        
+        // Personnel projections
+        const personnelEntry = countryData.projections.personnel.find(item => item.year === year);
+        if (personnelEntry) {
+          yearData[`${country}Personnel`] = personnelEntry.value;
+        }
+        
+        // Nukes projections
+        const nukesEntry = countryData.projections.nukes.find(item => item.year === year);
+        if (nukesEntry) {
+          yearData[`${country}Nukes`] = nukesEntry.value;
+        }
+      }
+    });
+    
+    projectionData.push(yearData);
+  });
+  
+  return projectionData;
+};
+
+export const getPlaceholderStoryChips = (): StoryChip[] => {
+  return [
+    {
+      id: 'economic-recession',
+      title: 'Global Economic Recession',
+      description: 'Major economic downturn impacts military budgets worldwide',
+      icon: 'trending-down',
+      category: 'economic',
+      impact: {
+        country: 'United States',
+        metric: 'budget',
+        effect: 'decrease',
+        amount: 15,
+        startYear: 2025
+      }
+    },
+    {
+      id: 'ai-breakthrough',
+      title: 'AI Military Breakthrough',
+      description: 'Revolutionary AI systems reduce need for personnel',
+      icon: 'cpu',
+      category: 'technological',
+      impact: {
+        country: 'China',
+        metric: 'personnel',
+        effect: 'decrease',
+        amount: 10,
+        startYear: 2028
+      }
+    },
+    {
+      id: 'regional-conflict',
+      title: 'Major Regional Conflict',
+      description: 'Conflict requires increased military mobilization',
+      icon: 'swords',
+      category: 'conflict',
+      impact: {
+        country: 'Russia',
+        metric: 'personnel',
+        effect: 'increase',
+        amount: 20,
+        startYear: 2026
+      }
+    },
+    {
+      id: 'arms-treaty',
+      title: 'New Strategic Arms Treaty',
+      description: 'Major powers agree to reduce nuclear arsenals',
+      icon: 'file-text',
+      category: 'geopolitical',
+      impact: {
+        country: 'United States',
+        metric: 'nukes',
+        effect: 'decrease',
+        amount: 25,
+        startYear: 2027
+      }
+    },
+    {
+      id: 'defense-alliance',
+      title: 'European Defense Integration',
+      description: 'EU establishes unified military command structure',
+      icon: 'shield',
+      category: 'geopolitical',
+      impact: {
+        country: 'European Union',
+        metric: 'budget',
+        effect: 'increase',
+        amount: 30,
+        startYear: 2025
+      }
+    }
+  ];
 };
