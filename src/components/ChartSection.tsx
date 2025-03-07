@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie } from 'recharts';
@@ -137,7 +136,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                     axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                   />
                   <Tooltip 
-                    formatter={(value) => [`$${value}B`, 'Budget']}
+                    formatter={(value: any) => [`$${value}B`, 'Budget']}
                     contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                   />
                   <Legend />
@@ -171,7 +170,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                     axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                   />
                   <Tooltip 
-                    formatter={(value) => [formatNumber(value), 'Personnel']}
+                    formatter={(value: any) => [formatNumber(Number(value)), 'Personnel']}
                     contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                   />
                   <Legend />
@@ -216,7 +215,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                 />
                 <Tooltip 
-                  formatter={(value) => [formatNumber(value), 'Personnel']}
+                  formatter={(value: any) => [formatNumber(Number(value)), 'Personnel']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
@@ -262,7 +261,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value) => [formatNumber(value), 'Personnel']}
+                  formatter={(value: any) => [formatNumber(Number(value)), 'Personnel']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
@@ -300,7 +299,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                 />
                 <Tooltip 
-                  formatter={(value) => [`$${value}B`, 'Budget']}
+                  formatter={(value: any) => [`$${value}B`, 'Budget']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
@@ -349,7 +348,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value) => [`$${value}B`, 'Budget']}
+                  formatter={(value: any) => [`$${value}B`, 'Budget']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
@@ -390,7 +389,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                     axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                   />
                   <Tooltip 
-                    formatter={(value) => [formatNumber(value), 'Aircraft']}
+                    formatter={(value: any) => [formatNumber(Number(value)), 'Aircraft']}
                     contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                   />
                   <Legend />
@@ -426,7 +425,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                     axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                   />
                   <Tooltip 
-                    formatter={(value) => [formatNumber(value), 'Tanks']}
+                    formatter={(value: any) => [formatNumber(Number(value)), 'Tanks']}
                     contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                   />
                   <Legend />
@@ -463,7 +462,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                     axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                   />
                   <Tooltip 
-                    formatter={(value) => [formatNumber(value), 'Naval Vessels']}
+                    formatter={(value: any) => [formatNumber(Number(value)), 'Naval Vessels']}
                     contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                   />
                   <Legend />
@@ -499,7 +498,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                 />
                 <Tooltip 
-                  formatter={(value) => [formatNumber(value), 'Units']}
+                  formatter={(value: any) => [formatNumber(Number(value)), 'Units']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
@@ -540,7 +539,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
                 />
                 <Tooltip 
-                  formatter={(value) => [formatNumber(value), 'Warheads']}
+                  formatter={(value: any) => [formatNumber(Number(value)), 'Warheads']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />
@@ -590,7 +589,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value) => [formatNumber(value), 'Warheads']}
+                  formatter={(value: any) => [formatNumber(Number(value)), 'Warheads']}
                   contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
                 />
                 <Legend />

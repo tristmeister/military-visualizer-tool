@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Globe, ShieldAlert, DollarSign, Users, Anchor, Plane, Tank, Zap } from 'lucide-react';
+import { Globe, ShieldAlert, DollarSign, Users, Anchor, Plane, Shield, Zap } from 'lucide-react';
 import { StatCategory } from '@/lib/military-data';
 
 interface ComparisonPanelProps {
@@ -17,7 +17,7 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
     { id: 'overview' as StatCategory, name: 'Overview', icon: <Globe className="w-4 h-4" /> },
     { id: 'personnel' as StatCategory, name: 'Personnel', icon: <Users className="w-4 h-4" /> },
     { id: 'budget' as StatCategory, name: 'Defense Budget', icon: <DollarSign className="w-4 h-4" /> },
-    { id: 'equipment' as StatCategory, name: 'Equipment', icon: <Tank className="w-4 h-4" /> },
+    { id: 'equipment' as StatCategory, name: 'Equipment', icon: <Shield className="w-4 h-4" /> },
     { id: 'nuclear' as StatCategory, name: 'Nuclear Arsenal', icon: <Zap className="w-4 h-4" /> },
   ];
 
