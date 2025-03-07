@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Globe, ShieldAlert, DollarSign, Users, Anchor, Plane, Shield, Zap, Clock } from 'lucide-react';
+import { Globe, ShieldAlert, DollarSign, Users, Shield, Zap, Clock, Map } from 'lucide-react';
 import { StatCategory } from '@/lib/military-data';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -24,31 +24,30 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
   ];
 
   return (
-    <div className="glassmorphism rounded-2xl p-6">
-      <h3 className="text-lg font-medium mb-4">Comparison Categories</h3>
-      <div className="space-y-2">
+    <div className="rounded-lg bg-sidebar-background border border-border p-2">
+      <div className="space-y-1">
         {categoryButtons.map((category) => (
           <Tooltip key={category.id}>
             <TooltipTrigger asChild>
               <motion.button
                 onClick={() => setActiveStat(category.id)}
                 className={`
-                  w-full flex items-center p-3 rounded-lg text-left transition-all duration-300
+                  w-full flex items-center p-3 rounded-md text-left transition-all duration-300
                   ${activeStat === category.id 
-                    ? 'bg-primary text-primary-foreground shadow-md' 
-                    : 'bg-secondary hover:bg-secondary/80 text-foreground'}
+                    ? 'bg-muted text-foreground' 
+                    : 'hover:bg-card/50 text-muted-foreground'}
                 `}
-                whileHover={{ x: 5 }}
+                whileHover={{ x: 2 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="mr-3">
+                <div className={`mr-3 ${activeStat === category.id ? 'text-primary' : 'text-muted-foreground'}`}>
                   {category.icon}
                 </div>
-                <span>{category.name}</span>
+                <span className="text-sm">{category.name}</span>
                 {activeStat === category.id && (
                   <motion.div 
                     layoutId="activeIndicator"
-                    className="ml-auto w-1.5 h-5 bg-white rounded-full"
+                    className="ml-auto w-1 h-5 bg-primary rounded-full"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -56,7 +55,7 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
                 )}
               </motion.button>
             </TooltipTrigger>
-            <TooltipContent side="right">
+            <TooltipContent side="right" className="bg-card border-border text-foreground text-xs">
               <p>{category.description}</p>
             </TooltipContent>
           </Tooltip>
