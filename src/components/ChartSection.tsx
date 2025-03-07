@@ -293,10 +293,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                 {personnelData.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
-                    fill={entry.color} 
-                    name={entry.name}
-                    flag={entry.flag}
-                    active={entry.active}
+                    fill={entry.color}
                   />
                 ))}
               </Treemap>
@@ -345,9 +342,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   {budgetData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={entry.color} 
-                      stroke="rgba(255,255,255,0.3)"
-                      strokeWidth={2}
+                      fill={entry.color}
                     />
                   ))}
                 </Bar>
@@ -384,9 +379,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   {budgetData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={entry.color} 
-                      stroke="rgba(255,255,255,0.3)"
-                      strokeWidth={2}
+                      fill={entry.color}
                     />
                   ))}
                 </Bar>
@@ -411,9 +404,6 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   <Cell 
                     key={`cell-${index}`} 
                     fill={entry.color}
-                    name={entry.name}
-                    flag={entry.flag}
-                    budget={entry.budget}
                   />
                 ))}
               </Treemap>
@@ -626,8 +616,6 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                     <Cell 
                       key={`cell-${index}`} 
                       fill={entry.hasMissiles ? entry.color : '#ccc'} 
-                      stroke={entry.hasMissiles ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.1)'}
-                      strokeWidth={entry.hasMissiles ? 2 : 1}
                     />
                   ))}
                 </Bar>
@@ -651,9 +639,6 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                   <Cell 
                     key={`cell-${index}`} 
                     fill={entry.color}
-                    name={entry.name}
-                    flag={entry.flag}
-                    nukes={entry.nukes}
                   />
                 ))}
               </Treemap>
