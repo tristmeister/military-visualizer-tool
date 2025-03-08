@@ -36,4 +36,28 @@
   .data-value {
     font-size: 2.5rem !important;
   }
+  
+  .mobile-sidebar-backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+  }
+  
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 85%;
+    max-width: 320px;
+    z-index: 40;
+    transform: translateX(0);
+    transition: transform 0.3s ease-out;
+  }
+  
+  .mobile-sidebar-hidden {
+    transform: translateX(-100%);
+  }
 }

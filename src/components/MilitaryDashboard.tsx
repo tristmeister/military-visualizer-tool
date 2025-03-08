@@ -38,6 +38,13 @@ const MilitaryDashboard: React.FC = () => {
     }
   }, [isMobile]);
 
+  // Disable storytelling mode on mobile
+  useEffect(() => {
+    if (isMobile && showStorytelling) {
+      setShowStorytelling(false);
+    }
+  }, [isMobile, showStorytelling]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -82,7 +89,7 @@ const MilitaryDashboard: React.FC = () => {
         {/* Mobile Backdrop */}
         {isMobile && sidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/60 z-30 backdrop-blur-sm" 
+            className="mobile-sidebar-backdrop"
             onClick={handleBackdropClick}
           />
         )}
@@ -90,10 +97,11 @@ const MilitaryDashboard: React.FC = () => {
         {/* Sidebar */}
         <motion.div 
           className={`
-            ${isMobile ? 'fixed z-40 h-full' : 'w-64'} 
+            mobile-sidebar
+            ${isMobile && !sidebarOpen ? 'mobile-sidebar-hidden' : ''}
+            ${isMobile ? '' : 'w-64'} 
             bg-sidebar-background text-sidebar-foreground border-r border-border 
             flex flex-col
-            ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
           `}
           variants={itemVariants}
           transition={{ duration: 0.3 }}
@@ -149,15 +157,17 @@ const MilitaryDashboard: React.FC = () => {
               {showStrengths ? 'Hide Analysis' : 'Show Strengths & Weaknesses'}
             </motion.button>
             
-            <motion.button
-              onClick={() => setShowStorytelling(!showStorytelling)}
-              className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span>Storytelling Mode</span>
-              <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
-            </motion.button>
+            {!isMobile && (
+              <motion.button
+                onClick={() => setShowStorytelling(!showStorytelling)}
+                className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span>Storytelling Mode</span>
+                <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
+              </motion.button>
+            )}
           </div>
         </motion.div>
         

@@ -28,25 +28,25 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
 
   return (
     <div className="rounded-lg bg-sidebar-background border border-border p-2">
-      <div className={`${isMobile ? 'grid grid-cols-2 gap-1' : 'space-y-1'}`}>
+      <div className={`${isMobile ? 'grid grid-cols-3 gap-1.5' : 'space-y-1'}`}>
         {categoryButtons.map((category) => (
           <Tooltip key={category.id}>
             <TooltipTrigger asChild>
               <motion.button
                 onClick={() => setActiveStat(category.id)}
                 className={`
-                  w-full flex items-center ${isMobile ? 'py-2 px-2' : 'p-3'} rounded-md text-left btn-skeuomorphic
+                  w-full flex items-center ${isMobile ? 'py-2 px-2 flex-col justify-center' : 'p-3'} rounded-md text-center btn-skeuomorphic
                   ${activeStat === category.id 
                     ? 'bg-primary text-primary-foreground' 
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'}
                 `}
-                whileHover={{ x: 2 }}
+                whileHover={{ x: isMobile ? 0 : 2, y: isMobile ? -2 : 0 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className={`${isMobile ? 'mr-1.5' : 'mr-3'} ${activeStat === category.id ? 'text-primary-foreground' : ''}`}>
+                <div className={`${isMobile ? 'mb-1' : 'mr-3'} ${activeStat === category.id ? 'text-primary-foreground' : ''}`}>
                   {category.icon}
                 </div>
-                <span className={`${isMobile ? 'text-xs' : 'text-sm'}`}>{category.name}</span>
+                <span className={`${isMobile ? 'text-[10px]' : 'text-sm'}`}>{category.name}</span>
                 {activeStat === category.id && !isMobile && (
                   <motion.div 
                     layoutId="activeIndicator"
