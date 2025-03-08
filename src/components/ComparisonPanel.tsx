@@ -35,7 +35,7 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
               <motion.button
                 onClick={() => setActiveStat(category.id)}
                 className={`
-                  w-full flex items-center ${isMobile ? 'py-2 px-2 flex-col justify-center' : 'p-3'} rounded-md text-center btn-skeuomorphic
+                  w-full flex items-center ${isMobile ? 'py-2.5 px-2 flex-col justify-center' : 'p-3'} rounded-md text-center btn-skeuomorphic
                   ${activeStat === category.id 
                     ? 'bg-primary text-primary-foreground' 
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'}
@@ -46,7 +46,7 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
                 <div className={`${isMobile ? 'mb-1' : 'mr-3'} ${activeStat === category.id ? 'text-primary-foreground' : ''}`}>
                   {category.icon}
                 </div>
-                <span className={`${isMobile ? 'text-[10px]' : 'text-sm'}`}>{category.name}</span>
+                <span className={`${isMobile ? 'text-[11px]' : 'text-sm'}`}>{category.name}</span>
                 {activeStat === category.id && !isMobile && (
                   <motion.div 
                     layoutId="activeIndicator"

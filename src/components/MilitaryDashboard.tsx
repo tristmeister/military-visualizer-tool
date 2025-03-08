@@ -95,7 +95,7 @@ const MilitaryDashboard: React.FC = () => {
         )}
 
         {/* Sidebar */}
-        <motion.div 
+        <div 
           className={`
             mobile-sidebar
             ${isMobile && !sidebarOpen ? 'mobile-sidebar-hidden' : ''}
@@ -103,8 +103,6 @@ const MilitaryDashboard: React.FC = () => {
             bg-sidebar-background text-sidebar-foreground border-r border-border 
             flex flex-col
           `}
-          variants={itemVariants}
-          transition={{ duration: 0.3 }}
         >
           <div className="p-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center">
@@ -169,7 +167,7 @@ const MilitaryDashboard: React.FC = () => {
               </motion.button>
             )}
           </div>
-        </motion.div>
+        </div>
         
         {/* Main display area */}
         <motion.div 

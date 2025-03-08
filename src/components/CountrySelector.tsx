@@ -50,7 +50,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
     <div>
       <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">Countries</h3>
       <motion.div 
-        className={`space-y-1.5 ${isMobile ? 'max-h-[220px]' : 'max-h-[240px]'} overflow-y-auto pr-1`}
+        className={`space-y-1.5 ${isMobile ? 'max-h-[250px]' : 'max-h-[240px]'} overflow-y-auto pr-1`}
         variants={containerVariants}
         initial="hidden"
         animate="show"
@@ -70,7 +70,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
             >
               <div className="flex items-center w-full">
                 <span className="mr-2 text-base">{militaryData[country].flag}</span>
-                <span className={`flex-grow ${isMobile ? 'text-sm' : 'text-sm'}`}>{country}</span>
+                <span className="flex-grow text-sm">{country}</span>
                 <motion.div 
                   animate={{ scale: isSelected ? 1 : 0.8, opacity: isSelected ? 1 : 0.5 }}
                   className={`w-3 h-3 rounded-full ${isSelected ? 'bg-primary border-primary' : 'border border-muted-foreground'}`}
