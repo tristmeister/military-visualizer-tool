@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Globe, ShieldAlert, DollarSign, Users, Shield, Zap, Clock, Map } from 'lucide-react';
 import { StatCategory } from '@/lib/military-data';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ComparisonPanelProps {
   activeStat: StatCategory;
@@ -14,6 +15,8 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
   activeStat, 
   setActiveStat 
 }) => {
+  const isMobile = useIsMobile();
+  
   const categoryButtons = [
     { id: 'overview' as StatCategory, name: 'Overview', icon: <Globe className="w-4 h-4" />, description: 'Overall military capability comparison' },
     { id: 'personnel' as StatCategory, name: 'Personnel', icon: <Users className="w-4 h-4" />, description: 'Military personnel strength and distribution' },
@@ -25,14 +28,14 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
 
   return (
     <div className="rounded-lg bg-sidebar-background border border-border p-2">
-      <div className="space-y-1">
+      <div className={`${isMobile ? 'grid grid-cols-2 gap-1' : 'space-y-1'}`}>
         {categoryButtons.map((category) => (
           <Tooltip key={category.id}>
             <TooltipTrigger asChild>
               <motion.button
                 onClick={() => setActiveStat(category.id)}
                 className={`
-                  w-full flex items-center p-3 rounded-md text-left btn-skeuomorphic
+                  w-full flex items-center ${isMobile ? 'py-2 px-2' : 'p-3'} rounded-md text-left btn-skeuomorphic
                   ${activeStat === category.id 
                     ? 'bg-primary text-primary-foreground' 
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'}
@@ -40,11 +43,11 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
                 whileHover={{ x: 2 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className={`mr-3 ${activeStat === category.id ? 'text-primary-foreground' : ''}`}>
+                <div className={`${isMobile ? 'mr-1.5' : 'mr-3'} ${activeStat === category.id ? 'text-primary-foreground' : ''}`}>
                   {category.icon}
                 </div>
-                <span className="text-sm">{category.name}</span>
-                {activeStat === category.id && (
+                <span className={`${isMobile ? 'text-xs' : 'text-sm'}`}>{category.name}</span>
+                {activeStat === category.id && !isMobile && (
                   <motion.div 
                     layoutId="activeIndicator"
                     className="ml-auto w-1 h-5 bg-secondary rounded-full"
@@ -55,7 +58,7 @@ const ComparisonPanel: React.FC<ComparisonPanelProps> = ({
                 )}
               </motion.button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="bg-card border-border text-foreground text-xs">
+            <TooltipContent side={isMobile ? "bottom" : "right"} className="bg-card border-border text-foreground text-xs">
               <p>{category.description}</p>
             </TooltipContent>
           </Tooltip>

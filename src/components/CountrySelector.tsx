@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { militaryData } from '@/lib/military-data';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CountrySelectorProps {
   selectedCountries: string[];
@@ -16,6 +17,8 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
   searchTerm,
   setSearchTerm
 }) => {
+  const isMobile = useIsMobile();
+  
   const handleToggleCountry = (country: string) => {
     if (selectedCountries.includes(country)) {
       setSelectedCountries(selectedCountries.filter(c => c !== country));
@@ -47,7 +50,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
     <div>
       <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">Countries</h3>
       <motion.div 
-        className="space-y-1.5 max-h-[240px] overflow-y-auto pr-1"
+        className={`space-y-1.5 ${isMobile ? 'max-h-[180px]' : 'max-h-[240px]'} overflow-y-auto pr-1`}
         variants={containerVariants}
         initial="hidden"
         animate="show"
@@ -67,7 +70,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
             >
               <div className="flex items-center w-full">
                 <span className="mr-2 text-base">{militaryData[country].flag}</span>
-                <span className="flex-grow text-sm">{country}</span>
+                <span className={`flex-grow ${isMobile ? 'text-xs' : 'text-sm'}`}>{country}</span>
                 <motion.div 
                   animate={{ scale: isSelected ? 1 : 0.8, opacity: isSelected ? 1 : 0.5 }}
                   className={`w-3 h-3 rounded-full ${isSelected ? 'bg-primary border-primary' : 'border border-muted-foreground'}`}

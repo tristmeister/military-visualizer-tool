@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Search, Map, ChevronRight } from 'lucide-react';
+import { ShieldAlert, Search, Menu, X, ChevronRight } from 'lucide-react';
 import CountrySelector from './CountrySelector';
 import ComparisonPanel from './ComparisonPanel';
 import ChartSection from './ChartSection';
 import StrengthsWeaknessesPanel from './StrengthsWeaknessesPanel';
 import StorytellingArea from './StorytellingArea';
 import { StatCategory } from '@/lib/military-data';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const MilitaryDashboard: React.FC = () => {
   const [selectedCountries, setSelectedCountries] = useState<string[]>(
@@ -18,6 +19,9 @@ const MilitaryDashboard: React.FC = () => {
   const [showStrengths, setShowStrengths] = useState(false);
   const [showStorytelling, setShowStorytelling] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Simulate loading for smoother animation
@@ -26,6 +30,13 @@ const MilitaryDashboard: React.FC = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Close sidebar when transitioning from mobile to desktop
+  useEffect(() => {
+    if (!isMobile) {
+      setSidebarOpen(false);
+    }
+  }, [isMobile]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,6 +59,17 @@ const MilitaryDashboard: React.FC = () => {
     }
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  // Handle backdrop click to close sidebar on mobile
+  const handleBackdropClick = () => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
+
   return (
     <motion.div 
       className="min-h-screen bg-background"
@@ -56,15 +78,36 @@ const MilitaryDashboard: React.FC = () => {
       animate={isLoaded ? "visible" : "hidden"}
     >
       {/* Main content */}
-      <div className="flex h-screen">
+      <div className="flex h-screen relative">
+        {/* Mobile Backdrop */}
+        {isMobile && sidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/60 z-30 backdrop-blur-sm" 
+            onClick={handleBackdropClick}
+          />
+        )}
+
         {/* Sidebar */}
         <motion.div 
-          className="w-64 bg-sidebar-background text-sidebar-foreground border-r border-border flex flex-col"
+          className={`
+            ${isMobile ? 'fixed z-40 h-full' : 'w-64'} 
+            bg-sidebar-background text-sidebar-foreground border-r border-border 
+            flex flex-col
+            ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
+          `}
           variants={itemVariants}
+          transition={{ duration: 0.3 }}
         >
-          <div className="p-4 border-b border-border flex items-center">
-            <ShieldAlert className="w-6 h-6 text-primary mr-2" />
-            <span className="font-bold tracking-tight">GEO.WARRIOR</span>
+          <div className="p-4 border-b border-border flex items-center justify-between">
+            <div className="flex items-center">
+              <ShieldAlert className="w-6 h-6 text-primary mr-2" />
+              <span className="font-bold tracking-tight">GEO.WARRIOR</span>
+            </div>
+            {isMobile && (
+              <button onClick={toggleSidebar} className="text-muted-foreground p-1">
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
           
           <div className="p-4">
@@ -124,21 +167,27 @@ const MilitaryDashboard: React.FC = () => {
           variants={itemVariants}
         >
           <div className="h-full flex flex-col">
-            <header className="bg-card/60 backdrop-blur-sm border-b border-border p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="geo-heading">Military Comparison</h1>
-                  <p className="geo-subheading">Global powers analysis</p>
-                </div>
-                <div className="flex gap-2">
-                  <div className="px-3 py-1 rounded-md bg-card border border-border text-muted-foreground text-sm">
-                    {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                  </div>
+            <header className="bg-card/60 backdrop-blur-sm border-b border-border p-4 md:p-6 flex items-center">
+              {isMobile && (
+                <button 
+                  onClick={toggleSidebar} 
+                  className="mr-3 btn-skeuomorphic p-1.5 rounded-md bg-muted"
+                >
+                  <Menu className="w-5 h-5" />
+                </button>
+              )}
+              <div>
+                <h1 className={`text-2xl md:text-4xl font-bold leading-none tracking-tight ${isMobile ? 'text-left' : ''}`}>Military Comparison</h1>
+                <p className="geo-subheading text-sm md:text-xl">Global powers analysis</p>
+              </div>
+              <div className="ml-auto hidden md:flex gap-2">
+                <div className="px-3 py-1 rounded-md bg-card border border-border text-muted-foreground text-sm">
+                  {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                 </div>
               </div>
             </header>
             
-            <div className="flex-1 overflow-auto p-6">
+            <div className="flex-1 overflow-auto p-3 md:p-6">
               <AnimatePresence mode="wait">
                 {!showStorytelling ? (
                   <motion.div
@@ -147,20 +196,20 @@ const MilitaryDashboard: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className="flex gap-6 h-full"
+                    className="flex flex-col md:flex-row gap-6 h-full"
                   >
                     <ChartSection 
                       selectedCountries={selectedCountries} 
                       activeStat={activeStat} 
-                      className={showStrengths ? "w-3/4" : "w-full"}
+                      className={`${showStrengths ? "w-full md:w-3/4" : "w-full"}`}
                     />
                     
                     {showStrengths && (
                       <motion.div 
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 50 }}
-                        className="w-1/4"
+                        initial={{ opacity: 0, x: isMobile ? 0 : 50, y: isMobile ? 20 : 0 }}
+                        animate={{ opacity: 1, x: 0, y: 0 }}
+                        exit={{ opacity: 0, x: isMobile ? 0 : 50, y: isMobile ? 20 : 0 }}
+                        className="w-full md:w-1/4 mt-4 md:mt-0"
                       >
                         <StrengthsWeaknessesPanel selectedCountries={selectedCountries} />
                       </motion.div>

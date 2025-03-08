@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -124,7 +123,7 @@
   }
   
   .geo-heading {
-    @apply text-[3.5rem] font-bold leading-none tracking-tight;
+    @apply text-4xl font-bold leading-none tracking-tight;
   }
   
   .geo-subheading {
@@ -201,5 +200,27 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
       0 1px 3px rgba(0, 0, 0, 0.2),
       0 0.14em 0.35em -0.1em rgba(0, 0, 0, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .geo-heading {
+      @apply text-2xl;
+    }
+    
+    .geo-subheading {
+      @apply text-sm;
+    }
+    
+    .chart-container {
+      min-height: 200px;
+    }
+    
+    .btn-skeuomorphic {
+      @apply py-1.5;
+    }
+
+    .story-chip {
+      @apply text-xs py-1.5 px-2;
+    }
   }
 }
