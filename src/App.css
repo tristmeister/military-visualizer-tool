@@ -23,6 +23,54 @@
   }
 }
 
+/* Story elements styling */
+.story-chip {
+  transition: all 0.2s ease-out;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  cursor: grab;
+}
+
+.story-chip:active {
+  cursor: grabbing;
+}
+
+.story-board {
+  transition: background-color 0.3s ease-out;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.story-board::-webkit-scrollbar {
+  height: 8px;
+}
+
+.story-board::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.story-board::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  border: 2px solid transparent;
+}
+
+.story-board:empty {
+  min-height: 100px;
+  border: 2px dashed rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projection-chart {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
 /* Mobile specific styles */
 @media (max-width: 768px) {
   .geo-heading {
@@ -54,5 +102,21 @@
     width: 85%;
     max-width: 320px;
     z-index: 40;
+  }
+  
+  /* Hide the sidebar when not open */
+  .mobile-sidebar-hidden {
+    display: none;
+  }
+  
+  /* Storytelling mobile optimizations */
+  .story-chip {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Timeline adjustments for mobile */
+  .timeline-ruler .text-xs {
+    font-size: 0.65rem;
   }
 }
