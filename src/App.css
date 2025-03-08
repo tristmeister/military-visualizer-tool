@@ -54,10 +54,5 @@
     width: 85%;
     max-width: 320px;
     z-index: 40;
-    transition: transform 0.3s ease-out;
-  }
-  
-  .mobile-sidebar-hidden {
-    transform: translateX(-100%);
   }
 }

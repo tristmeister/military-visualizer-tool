@@ -67,7 +67,8 @@ const MilitaryDashboard: React.FC = () => {
   };
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    console.log("Toggle sidebar called, current state:", sidebarOpen);
+    setSidebarOpen(prevState => !prevState);
   };
 
   // Handle backdrop click to close sidebar on mobile
@@ -95,79 +96,88 @@ const MilitaryDashboard: React.FC = () => {
         )}
 
         {/* Sidebar */}
-        <div 
-          className={`
-            mobile-sidebar
-            ${isMobile && !sidebarOpen ? 'mobile-sidebar-hidden' : ''}
-            ${isMobile ? '' : 'w-64'} 
-            bg-sidebar-background text-sidebar-foreground border-r border-border 
-            flex flex-col
-          `}
-        >
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <div className="flex items-center">
-              <ShieldAlert className="w-6 h-6 text-primary mr-2" />
-              <span className="font-bold tracking-tight">GEO.WARRIOR</span>
-            </div>
-            {isMobile && (
-              <button onClick={toggleSidebar} className="text-muted-foreground p-1">
-                <X className="w-5 h-5" />
-              </button>
-            )}
-          </div>
-          
-          <div className="p-4">
-            <div className="relative mb-4">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search countries..."
-                className="w-full bg-muted border border-border rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+        <AnimatePresence>
+          <motion.div 
+            className={`
+              mobile-sidebar
+              ${isMobile && !sidebarOpen ? 'mobile-sidebar-hidden' : ''}
+              ${isMobile ? '' : 'w-64'} 
+              bg-sidebar-background text-sidebar-foreground border-r border-border 
+              flex flex-col
+            `}
+            initial={isMobile ? { x: "-100%" } : { x: 0 }}
+            animate={isMobile ? { x: sidebarOpen ? 0 : "-100%" } : { x: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <div className="flex items-center">
+                <ShieldAlert className="w-6 h-6 text-primary mr-2" />
+                <span className="font-bold tracking-tight">GEO.WARRIOR</span>
+              </div>
+              {isMobile && (
+                <button 
+                  onClick={toggleSidebar} 
+                  className="text-muted-foreground p-1 hover:text-primary transition-colors"
+                  aria-label="Close sidebar"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
             </div>
             
-            <div className="space-y-4">
-              <CountrySelector 
-                selectedCountries={selectedCountries} 
-                setSelectedCountries={setSelectedCountries}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-              />
-              
-              <div className="pt-4">
-                <ComparisonPanel 
-                  activeStat={activeStat} 
-                  setActiveStat={setActiveStat} 
+            <div className="p-4">
+              <div className="relative mb-4">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search countries..."
+                  className="w-full bg-muted border border-border rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
+              
+              <div className="space-y-4">
+                <CountrySelector 
+                  selectedCountries={selectedCountries} 
+                  setSelectedCountries={setSelectedCountries}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                />
+                
+                <div className="pt-4">
+                  <ComparisonPanel 
+                    activeStat={activeStat} 
+                    setActiveStat={setActiveStat} 
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <div className="mt-auto border-t border-border p-4 space-y-2">
-            <motion.button
-              onClick={() => setShowStrengths(!showStrengths)}
-              className={`w-full flex items-center justify-center p-2 rounded-md text-sm btn-skeuomorphic ${showStrengths ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {showStrengths ? 'Hide Analysis' : 'Show Strengths & Weaknesses'}
-            </motion.button>
             
-            {!isMobile && (
+            <div className="mt-auto border-t border-border p-4 space-y-2">
               <motion.button
-                onClick={() => setShowStorytelling(!showStorytelling)}
-                className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
+                onClick={() => setShowStrengths(!showStrengths)}
+                className={`w-full flex items-center justify-center p-2 rounded-md text-sm btn-skeuomorphic ${showStrengths ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span>Storytelling Mode</span>
-                <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
+                {showStrengths ? 'Hide Analysis' : 'Show Strengths & Weaknesses'}
               </motion.button>
-            )}
-          </div>
-        </div>
+              
+              {!isMobile && (
+                <motion.button
+                  onClick={() => setShowStorytelling(!showStorytelling)}
+                  className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <span>Storytelling Mode</span>
+                  <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
+                </motion.button>
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
         
         {/* Main display area */}
         <motion.div 
