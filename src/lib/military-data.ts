@@ -37,7 +37,7 @@ export type StoryChip = {
     country: string;
     metric: 'budget' | 'personnel' | 'nukes' | 'techIndex';
     effect: 'increase' | 'decrease';
-    amount: number; // percentage change
+    amount: number; // percentage change;
     startYear: number;
   };
 };
@@ -665,3 +665,289 @@ export const getPlaceholderStoryChips = (): StoryChip[] => {
     }
   ];
 };
+
+export const getEnhancedEquipmentData = () => {
+  const result: Record<string, any> = {};
+  
+  Object.keys(militaryData).forEach(country => {
+    const countryData = militaryData[country];
+    
+    // Document how derived values are calculated
+    result[country] = {
+      tanks: {
+        quantity: countryData.tanks || 0,
+        // Estimate growth based on historical budget trends
+        growth: getEstimatedGrowth(countryData, 'tanks'),
+        // Quality rating based on technology index
+        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
+        mainModels: getMainEquipmentModels('tanks', country),
+        // Estimate modernization percentage based on tech index
+        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
+        // Estimate operational rate based on budget/GDP ratio
+        operationalRate: 50 + Math.round(countryData.gdpPercent * 10),
+        // Estimate yearly budget allocation
+        yearlyBudget: Math.round(countryData.budget * 0.1),
+      },
+      aircraft: {
+        quantity: countryData.aircraft || 0,
+        growth: getEstimatedGrowth(countryData, 'aircraft'),
+        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
+        mainModels: getMainEquipmentModels('aircraft', country),
+        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
+        operationalRate: 55 + Math.round(countryData.gdpPercent * 10),
+        yearlyBudget: Math.round(countryData.budget * 0.2),
+      },
+      ships: {
+        quantity: countryData.naval || 0,
+        growth: getEstimatedGrowth(countryData, 'ships'),
+        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
+        mainModels: getMainEquipmentModels('ships', country),
+        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
+        operationalRate: 60 + Math.round(countryData.gdpPercent * 8),
+        yearlyBudget: Math.round(countryData.budget * 0.15),
+      },
+      airDefense: {
+        // Air defense systems estimated based on budget and technology
+        quantity: Math.round((countryData.budget / 10) * (countryData.techIndex / 8)),
+        growth: getEstimatedGrowth(countryData, 'airDefense'),
+        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
+        mainModels: getMainEquipmentModels('airDefense', country),
+        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
+        operationalRate: 65 + Math.round(countryData.gdpPercent * 7),
+        yearlyBudget: Math.round(countryData.budget * 0.07),
+      },
+      missiles: {
+        // Missile count estimated based on nukes and technology
+        quantity: Math.round(countryData.nukes * 10) + Math.round(countryData.aircraft * 0.2),
+        growth: getEstimatedGrowth(countryData, 'missiles'),
+        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
+        mainModels: getMainEquipmentModels('missiles', country),
+        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
+        operationalRate: 70 + Math.round(countryData.gdpPercent * 6),
+        yearlyBudget: Math.round(countryData.budget * 0.08),
+      },
+      helicopters: {
+        // Helicopter count estimated as a portion of aircraft
+        quantity: Math.round(countryData.aircraft / 3),
+        growth: getEstimatedGrowth(countryData, 'helicopters'),
+        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
+        mainModels: getMainEquipmentModels('helicopters', country),
+        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
+        operationalRate: 55 + Math.round(countryData.gdpPercent * 9),
+        yearlyBudget: Math.round(countryData.budget * 0.06),
+      },
+      // Generate historical trend data based on actual historical budget data
+      historicalData: generateHistoricalEquipmentData(country),
+    };
+    
+    // Calculate and store global rankings
+    calculateEquipmentRankings(result);
+  });
+  
+  return result;
+};
+
+function getEstimatedGrowth(countryData: MilitaryData, equipmentType: string): number {
+  if (!countryData.historicalBudget || countryData.historicalBudget.length < 2) {
+    return 0;
+  }
+  
+  // Calculate average budget growth over last 5 years
+  const recentBudgets = countryData.historicalBudget.slice(-5);
+  if (recentBudgets.length < 2) return 0;
+  
+  const oldestBudget = recentBudgets[0].value;
+  const latestBudget = recentBudgets[recentBudgets.length - 1].value;
+  
+  const budgetGrowthRate = ((latestBudget / oldestBudget) - 1) * 100;
+  
+  // Different equipment types grow at different rates relative to budget
+  const growthFactors: Record<string, number> = {
+    tanks: 0.6,
+    aircraft: 0.8,
+    ships: 0.5,
+    airDefense: 0.9,
+    missiles: 0.7,
+    helicopters: 0.6
+  };
+  
+  return parseFloat((budgetGrowthRate * (growthFactors[equipmentType] || 0.7)).toFixed(1));
+}
+
+function getMainEquipmentModels(category: string, country: string): string[] {
+  const modelsByCategory: Record<string, Record<string, string[]>> = {
+    tanks: {
+      'United States': ['M1A2 Abrams', 'M1A1 Abrams', 'M2 Bradley'],
+      'Russia': ['T-90', 'T-72B3', 'T-80U', 'T-14 Armata'],
+      'China': ['Type 99A', 'Type 96', 'Type 15'],
+      'European Union': ['Leopard 2A7', 'Challenger 2', 'Leclerc'],
+      'default': ['MBT-2000', 'T-72', 'AMX-30']
+    },
+    aircraft: {
+      'United States': ['F-35 Lightning II', 'F-22 Raptor', 'F-15 Eagle', 'F-16 Fighting Falcon'],
+      'Russia': ['Su-35', 'Su-57', 'MiG-29', 'Tu-160'],
+      'China': ['J-20', 'J-16', 'J-10C', 'H-6K'],
+      'European Union': ['Eurofighter Typhoon', 'Rafale', 'Gripen E'],
+      'default': ['F-16', 'MiG-29', 'Su-30']
+    },
+    ships: {
+      'United States': ['Nimitz-class Carrier', 'Arleigh Burke-class Destroyer', 'Virginia-class Submarine'],
+      'Russia': ['Admiral Kuznetsov', 'Kirov-class Battlecruiser', 'Borei-class Submarine'],
+      'China': ['Type 055 Destroyer', 'Type 003 Aircraft Carrier', 'Type 095 Submarine'],
+      'European Union': ['Queen Elizabeth-class Carrier', 'FREMM Frigate', 'Type 212 Submarine'],
+      'default': ['Frigate', 'Corvette', 'Patrol Vessel']
+    },
+    airDefense: {
+      'United States': ['Patriot PAC-3', 'THAAD', 'Avenger'],
+      'Russia': ['S-400 Triumf', 'S-350', 'Pantsir-S1'],
+      'China': ['HQ-9', 'HQ-19', 'HQ-16'],
+      'European Union': ['SAMP/T', 'IRIS-T SL', 'Skyguard'],
+      'default': ['SA-8', 'SA-15', 'Portable SAM']
+    },
+    missiles: {
+      'United States': ['Tomahawk', 'Minuteman III ICBM', 'Trident D5'],
+      'Russia': ['Iskander', 'Kalibr', 'RS-28 Sarmat'],
+      'China': ['DF-41', 'DF-26', 'YJ-18'],
+      'European Union': ['Storm Shadow/SCALP', 'Exocet', 'ASMP'],
+      'default': ['Short-range ballistic missile', 'Cruise missile']
+    },
+    helicopters: {
+      'United States': ['AH-64 Apache', 'UH-60 Black Hawk', 'CH-47 Chinook'],
+      'Russia': ['Ka-52 Alligator', 'Mi-28 Havoc', 'Mi-24 Hind'],
+      'China': ['Z-10', 'Z-19', 'Z-8'],
+      'European Union': ['Tiger', 'NH90', 'AW101'],
+      'default': ['Mi-17', 'AW109', 'UH-1']
+    }
+  };
+  
+  // Get models for this country and category
+  const models = modelsByCategory[category]?.[country] || modelsByCategory[category]?.['default'] || ['Generic Model'];
+  
+  // Return subset of models
+  const count = Math.min(3, models.length);
+  return models.slice(0, count);
+}
+
+function generateHistoricalEquipmentData(country: string) {
+  const countryData = militaryData[country];
+  if (!countryData.historicalBudget) return [];
+  
+  const years = countryData.historicalBudget.map(item => item.year);
+  const budgetValues = countryData.historicalBudget.map(item => item.value);
+  
+  return years.map((year, index) => {
+    // Get budget for this year
+    const yearBudget = budgetValues[index];
+    // Calculate budget ratio compared to latest year
+    const budgetRatio = yearBudget / countryData.budget;
+    
+    // Scale equipment counts based on budget ratio
+    return {
+      year,
+      tanks: Math.round(countryData.tanks * budgetRatio * 0.9),
+      aircraft: Math.round(countryData.aircraft * budgetRatio * 0.95),
+      ships: Math.round(countryData.naval * budgetRatio * 0.97),
+      airDefense: Math.round((countryData.budget / 10) * (countryData.techIndex / 8) * budgetRatio * 0.92),
+      missiles: Math.round(countryData.nukes * 10 * budgetRatio * 0.93),
+      helicopters: Math.round(countryData.aircraft / 3 * budgetRatio * 0.91),
+    };
+  });
+}
+
+function calculateEquipmentRankings(equipmentData: Record<string, any>) {
+  const categories = ['tanks', 'aircraft', 'ships', 'airDefense', 'missiles', 'helicopters'];
+  
+  categories.forEach(category => {
+    // Get all countries with this equipment type
+    const countriesWithEquipment = Object.keys(equipmentData)
+      .filter(country => equipmentData[country][category].quantity > 0);
+    
+    // Sort by quantity
+    const sortedByQuantity = [...countriesWithEquipment]
+      .sort((a, b) => equipmentData[b][category].quantity - equipmentData[a][category].quantity);
+    
+    // Assign ranks
+    sortedByQuantity.forEach((country, index) => {
+      equipmentData[country][category].globalRank = index + 1;
+      
+      // Power rating combines quantity and quality
+      equipmentData[country][category].powerRating = 
+        (equipmentData[country][category].quantity * equipmentData[country][category].qualityRating) / 10;
+    });
+  });
+}
+
+export const equipmentCategories = [
+  { 
+    id: 'tanks', 
+    name: 'Tanks', 
+    icon: 'TankIcon',
+    color: '#f97316', // Orange (brand color)
+    description: 'Main battle tanks and armored fighting vehicles',
+    capabilities: [
+      'Ground warfare dominance',
+      'Infantry support',
+      'Territorial control'
+    ]
+  },
+  { 
+    id: 'aircraft', 
+    name: 'Combat Aircraft', 
+    icon: 'PlaneIcon',
+    color: '#3b82f6', // Blue
+    description: 'Fighter jets, bombers, and support aircraft',
+    capabilities: [
+      'Air superiority',
+      'Strategic bombing',
+      'Reconnaissance'
+    ]
+  },
+  { 
+    id: 'ships', 
+    name: 'Naval Vessels', 
+    icon: 'ShipIcon',
+    color: '#06b6d4', // Cyan
+    description: 'Aircraft carriers, destroyers, submarines, and support vessels',
+    capabilities: [
+      'Maritime dominance',
+      'Power projection',
+      'Naval blockade capability'
+    ]
+  },
+  { 
+    id: 'airDefense', 
+    name: 'Air Defense', 
+    icon: 'RadarIcon',
+    color: '#8b5cf6', // Purple
+    description: 'Surface-to-air missile systems and anti-aircraft installations',
+    capabilities: [
+      'Airspace denial',
+      'Critical infrastructure protection',
+      'Counter-stealth capability'
+    ]
+  },
+  { 
+    id: 'missiles', 
+    name: 'Missile Systems', 
+    icon: 'RocketIcon',
+    color: '#ef4444', // Red
+    description: 'Ballistic missiles, cruise missiles, and tactical missile systems',
+    capabilities: [
+      'Strategic deterrence',
+      'Long-range strike capability',
+      'Precision targeting'
+    ]
+  },
+  { 
+    id: 'helicopters', 
+    name: 'Military Helicopters', 
+    icon: 'HelicopterIcon',
+    color: '#10b981', // Green
+    description: 'Attack helicopters, transport helicopters, and utility rotorcraft',
+    capabilities: [
+      'Close air support',
+      'Rapid deployment',
+      'Search and rescue'
+    ]
+  }
+];
