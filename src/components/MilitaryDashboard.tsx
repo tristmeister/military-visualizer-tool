@@ -7,6 +7,7 @@ import ComparisonPanel from './ComparisonPanel';
 import ChartSection from './ChartSection';
 import StrengthsWeaknessesPanel from './StrengthsWeaknessesPanel';
 import StorytellingArea from './StorytellingArea';
+import EquipmentVisualization from './EquipmentVisualization';
 import { StatCategory } from '@/lib/military-data';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -18,6 +19,7 @@ const MilitaryDashboard: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [showStrengths, setShowStrengths] = useState(false);
   const [showStorytelling, setShowStorytelling] = useState(false);
+  const [showEquipmentViz, setShowEquipmentViz] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -44,6 +46,19 @@ const MilitaryDashboard: React.FC = () => {
       setShowStorytelling(false);
     }
   }, [isMobile, showStorytelling]);
+
+  // Only show one special view at a time
+  useEffect(() => {
+    if (showStorytelling && showEquipmentViz) {
+      setShowEquipmentViz(false);
+    }
+  }, [showStorytelling]);
+
+  useEffect(() => {
+    if (showEquipmentViz && showStorytelling) {
+      setShowStorytelling(false);
+    }
+  }, [showEquipmentViz]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -165,15 +180,33 @@ const MilitaryDashboard: React.FC = () => {
               </motion.button>
               
               {!isMobile && (
-                <motion.button
-                  onClick={() => setShowStorytelling(!showStorytelling)}
-                  className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span>Storytelling Mode</span>
-                  <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
-                </motion.button>
+                <>
+                  <motion.button
+                    onClick={() => {
+                      setShowStorytelling(!showStorytelling);
+                      if (!showStorytelling) setShowEquipmentViz(false);
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span>Storytelling Mode</span>
+                    <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => {
+                      setShowEquipmentViz(!showEquipmentViz);
+                      if (!showEquipmentViz) setShowStorytelling(false);
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showEquipmentViz ? 'bg-brand-orange text-white' : 'bg-muted text-muted-foreground'}`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span>Equipment Visualization</span>
+                    <ChevronRight className={`h-4 w-4 transition-transform ${showEquipmentViz ? 'rotate-90' : ''}`} />
+                  </motion.button>
+                </>
               )}
             </div>
           </motion.div>
@@ -207,7 +240,7 @@ const MilitaryDashboard: React.FC = () => {
             
             <div className="flex-1 overflow-auto p-3 md:p-6">
               <AnimatePresence mode="wait">
-                {!showStorytelling ? (
+                {!showStorytelling && !showEquipmentViz ? (
                   <motion.div
                     key="comparison"
                     initial={{ opacity: 0, y: 10 }}
@@ -233,7 +266,7 @@ const MilitaryDashboard: React.FC = () => {
                       </motion.div>
                     )}
                   </motion.div>
-                ) : (
+                ) : showStorytelling ? (
                   <motion.div
                     key="storytelling"
                     initial={{ opacity: 0, y: 10 }}
@@ -243,6 +276,17 @@ const MilitaryDashboard: React.FC = () => {
                     className="h-full"
                   >
                     <StorytellingArea />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="equipment"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full"
+                  >
+                    <EquipmentVisualization selectedCountries={selectedCountries} />
                   </motion.div>
                 )}
               </AnimatePresence>

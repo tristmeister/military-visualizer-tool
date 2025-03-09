@@ -76,6 +76,23 @@
   border: 1px solid rgba(249, 115, 22, 0.1);
 }
 
+/* Scrollbar utilities */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Equipment visualization styles */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
 /* Mobile specific styles */
 @media (max-width: 768px) {
   .geo-heading {
@@ -123,5 +140,10 @@
   /* Timeline adjustments for mobile */
   .timeline-ruler .text-xs {
     font-size: 0.65rem;
+  }
+  
+  /* Equipment visualization mobile optimizations */
+  .icon-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
