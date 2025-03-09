@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -43,9 +42,8 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { useIsMobile } from '@/hooks/use-mobile';
 import { militaryData } from '@/lib/military-data';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend, Cell } from 'recharts';
 
-// Enhanced equipment data with growth trends and quality rating
 const getEnhancedEquipmentData = () => {
   const result = {};
   
@@ -53,12 +51,12 @@ const getEnhancedEquipmentData = () => {
     result[country] = {
       tanks: {
         quantity: militaryData[country].tanks || 0,
-        growth: Math.random() * 10 - 5, // Random growth between -5% and +5%
-        qualityRating: Math.min(10, Math.max(1, Math.round(Math.random() * 5) + 5)), // Quality rating between 1-10
+        growth: Math.random() * 10 - 5,
+        qualityRating: Math.min(10, Math.max(1, Math.round(Math.random() * 5) + 5)),
         mainModels: generateMainModels('tanks', country),
         modernPercentage: Math.round(Math.random() * 100),
-        operationalRate: 50 + Math.round(Math.random() * 50), // Between 50% and 100%
-        yearlyBudget: Math.round((militaryData[country].budget || 100) * (Math.random() * 0.1 + 0.05)), // 5-15% of total budget
+        operationalRate: 50 + Math.round(Math.random() * 50),
+        yearlyBudget: Math.round((militaryData[country].budget || 100) * (Math.random() * 0.1 + 0.05)),
       },
       aircraft: {
         quantity: militaryData[country].aircraft || 0,
@@ -67,7 +65,7 @@ const getEnhancedEquipmentData = () => {
         mainModels: generateMainModels('aircraft', country),
         modernPercentage: Math.round(Math.random() * 100),
         operationalRate: 50 + Math.round(Math.random() * 50),
-        yearlyBudget: Math.round((militaryData[country].budget || 100) * (Math.random() * 0.2 + 0.1)), // 10-30% of total budget
+        yearlyBudget: Math.round((militaryData[country].budget || 100) * (Math.random() * 0.2 + 0.1)),
       },
       ships: {
         quantity: militaryData[country].naval || 0,
@@ -76,7 +74,7 @@ const getEnhancedEquipmentData = () => {
         mainModels: generateMainModels('ships', country),
         modernPercentage: Math.round(Math.random() * 100),
         operationalRate: 50 + Math.round(Math.random() * 50),
-        yearlyBudget: Math.round((militaryData[country].budget || 100) * (Math.random() * 0.15 + 0.1)), // 10-25% of total budget
+        yearlyBudget: Math.round((militaryData[country].budget || 100) * (Math.random() * 0.15 + 0.1)),
       },
       airDefense: {
         quantity: Math.round(militaryData[country].budget / 10) || 0,
@@ -105,26 +103,21 @@ const getEnhancedEquipmentData = () => {
         operationalRate: 50 + Math.round(Math.random() * 50),
         yearlyBudget: Math.round((militaryData[country].budget || 100) * (Math.random() * 0.1 + 0.05)),
       },
-      // Add historical data for trending charts
       historicalData: generateHistoricalData(country),
     };
   });
   
-  // Add precomputed rankings based on quantity and quality
   const categories = ['tanks', 'aircraft', 'ships', 'airDefense', 'missiles', 'helicopters'];
   
   categories.forEach(category => {
-    // Sort countries by this category's quantity
     const sortedByQuantity = Object.keys(result)
       .filter(country => result[country][category].quantity > 0)
       .sort((a, b) => result[b][category].quantity - result[a][category].quantity);
     
-    // Store ranks
     sortedByQuantity.forEach((country, index) => {
       result[country][category].globalRank = index + 1;
     });
     
-    // Calculate combined power rating (quantity * quality)
     Object.keys(result).forEach(country => {
       if (result[country][category]) {
         result[country][category].powerRating = 
@@ -136,7 +129,6 @@ const getEnhancedEquipmentData = () => {
   return result;
 };
 
-// Generate realistic models based on country and category
 function generateMainModels(category: string, country: string): string[] {
   const modelsByCategory: Record<string, Record<string, string[]>> = {
     tanks: {
@@ -183,15 +175,12 @@ function generateMainModels(category: string, country: string): string[] {
     }
   };
   
-  // Get models for this country and category
   const models = modelsByCategory[category]?.[country] || modelsByCategory[category]?.['default'] || [];
   
-  // Return random subset of models (1-3)
   const count = Math.floor(Math.random() * 3) + 1;
   return models.slice(0, count);
 }
 
-// Generate historical data for trending charts
 function generateHistoricalData(country: string) {
   const years = [2020, 2021, 2022, 2023, 2024];
   return years.map(year => {
@@ -199,9 +188,8 @@ function generateHistoricalData(country: string) {
     const baseAircraft = militaryData[country]?.aircraft || 100;
     const baseShips = militaryData[country]?.naval || 50;
     
-    // Add some random variation for historical data
-    const randomFactor = 0.8 + (Math.random() * 0.4); // 0.8 to 1.2
-    const yearFactor = (year - 2020) / (2024 - 2020); // 0 to 1 over the time period
+    const randomFactor = 0.8 + (Math.random() * 0.4);
+    const yearFactor = (year - 2020) / (2024 - 2020);
     
     return {
       year,
@@ -215,13 +203,12 @@ function generateHistoricalData(country: string) {
   });
 }
 
-// Define the equipment categories with their visualization details
 const equipmentCategories = [
   { 
     id: 'tanks', 
     name: 'Tanks', 
     icon: TankIcon,
-    color: '#f97316', // Orange (brand color)
+    color: '#f97316',
     description: 'Main battle tanks and armored fighting vehicles',
     capabilities: [
       'Ground warfare dominance',
@@ -233,7 +220,7 @@ const equipmentCategories = [
     id: 'aircraft', 
     name: 'Combat Aircraft', 
     icon: PlaneIcon,
-    color: '#3b82f6', // Blue
+    color: '#3b82f6',
     description: 'Fighter jets, bombers, and support aircraft',
     capabilities: [
       'Air superiority',
@@ -245,7 +232,7 @@ const equipmentCategories = [
     id: 'ships', 
     name: 'Naval Vessels', 
     icon: ShipIcon,
-    color: '#06b6d4', // Cyan
+    color: '#06b6d4',
     description: 'Aircraft carriers, destroyers, submarines, and support vessels',
     capabilities: [
       'Maritime dominance',
@@ -257,7 +244,7 @@ const equipmentCategories = [
     id: 'airDefense', 
     name: 'Air Defense', 
     icon: RadarIcon,
-    color: '#8b5cf6', // Purple
+    color: '#8b5cf6',
     description: 'Surface-to-air missile systems and anti-aircraft installations',
     capabilities: [
       'Airspace denial',
@@ -269,7 +256,7 @@ const equipmentCategories = [
     id: 'missiles', 
     name: 'Missile Systems', 
     icon: RocketIcon,
-    color: '#ef4444', // Red
+    color: '#ef4444',
     description: 'Ballistic missiles, cruise missiles, and tactical missile systems',
     capabilities: [
       'Strategic deterrence',
@@ -281,7 +268,7 @@ const equipmentCategories = [
     id: 'helicopters', 
     name: 'Military Helicopters', 
     icon: HelicopterIcon,
-    color: '#10b981', // Green
+    color: '#10b981',
     description: 'Attack helicopters, transport helicopters, and utility rotorcraft',
     capabilities: [
       'Close air support',
@@ -311,71 +298,54 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
   const [normalizeData, setNormalizeData] = useState(false);
   const [showQualityRating, setShowQualityRating] = useState(false);
   
-  // We'll show up to three countries at a time for comparison
   const [comparisonCountries, setComparisonCountries] = useState<string[]>([]);
   
   useEffect(() => {
-    // Load enhanced equipment data
     setEquipmentData(getEnhancedEquipmentData());
     
-    // Set initial comparison countries
     if (selectedCountries.length >= 1) {
       setComparisonCountries(selectedCountries.slice(0, Math.min(3, selectedCountries.length)));
     } else {
-      // Default fallback if no countries selected
       setComparisonCountries(['United States', 'China', 'Russia'].slice(0, Math.min(3, selectedCountries.length)));
     }
     
-    // Simulate loading
     setTimeout(() => setIsLoaded(true), 500);
   }, [selectedCountries]);
   
-  // Get the currently active category object
   const activeCategoryObj = equipmentCategories.find(cat => cat.id === activeCategory);
   
-  // Calculate the number of icons to show per country (max of 10 rows with 5 icons each)
   const calculateIconGrid = (country: string, categoryId: string) => {
     if (!equipmentData[country]) return { fullRows: 0, remainder: 0, totalIcons: 0, value: 0, qualityValue: 0 };
     
-    // Get the maximum value across all selected countries for this category
     const maxValue = Math.max(
       ...comparisonCountries.map(c => 
         equipmentData[c]?.[categoryId]?.quantity || 0
       )
     );
     
-    // Get this country's value and quality
     const value = equipmentData[country]?.[categoryId]?.quantity || 0;
     const qualityValue = equipmentData[country]?.[categoryId]?.qualityRating || 5;
     
-    // Calculate total icons (max 50)
-    // If normalizeData is true, scale based on percentage of max value
-    // If showQualityRating is true, factor in the quality rating
     let totalIcons = 0;
     
     if (normalizeData) {
-      // Normalize to percentage of maximum
       const normalizedValue = maxValue > 0 ? (value / maxValue) : 0;
       
       if (showQualityRating) {
-        // Factor in quality (quantity * quality / 10)
         totalIcons = Math.min(50, Math.round(normalizedValue * 50 * (qualityValue / 5)));
       } else {
         totalIcons = Math.min(50, Math.round(normalizedValue * 50));
       }
     } else {
-      // Use absolute values with some scaling
       const scaleFactor = 50 / (maxValue || 1);
       
       if (showQualityRating) {
-        // Factor in quality (quantity * quality / 10)
         totalIcons = Math.min(50, Math.round(value * scaleFactor * (qualityValue / 5)));
       } else {
         totalIcons = Math.min(50, Math.round(value * scaleFactor));
       }
     }
     
-    // Calculate rows and remainder for the last row
     const fullRows = Math.floor(totalIcons / 5);
     const remainder = totalIcons % 5;
     
@@ -396,17 +366,14 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
     };
   };
   
-  // Format large numbers with commas
   const formatNumber = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
   
-  // Format percentage change with + or - sign
   const formatGrowth = (num: number): string => {
     return (num > 0 ? '+' : '') + num.toFixed(1) + '%';
   };
   
-  // Generate chart data for the current category
   const generateChartData = useMemo(() => {
     if (!equipmentData || !activeCategoryObj) return [];
     
@@ -427,11 +394,9 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
     }).filter(Boolean);
   }, [equipmentData, comparisonCountries, activeCategory, activeCategoryObj]);
   
-  // Generate trend data for the selected countries and category
   const generateTrendData = useMemo(() => {
     if (!equipmentData || !activeCategoryObj) return [];
     
-    // Convert historical data to format suitable for charts
     const result = [];
     
     comparisonCountries.forEach(country => {
@@ -453,25 +418,20 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
     return result;
   }, [equipmentData, comparisonCountries, activeCategory, activeCategoryObj]);
   
-  // Add or remove a country from comparison
   const toggleCountryComparison = (country: string) => {
     if (comparisonCountries.includes(country)) {
-      // Don't allow removing if it's the last country
       if (comparisonCountries.length > 1) {
         setComparisonCountries(comparisonCountries.filter(c => c !== country));
       }
     } else {
-      // Add country if we have less than 3 countries
       if (comparisonCountries.length < 3) {
         setComparisonCountries([...comparisonCountries, country]);
       } else {
-        // Replace the last country
         setComparisonCountries([...comparisonCountries.slice(0, 2), country]);
       }
     }
   };
   
-  // Loading state
   if (!isLoaded) {
     return (
       <div className={`bg-card rounded-lg border border-border h-full flex items-center justify-center ${className}`}>
@@ -497,7 +457,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
   
   return (
     <div className={`bg-card rounded-lg border border-border h-full flex flex-col ${className}`}>
-      {/* Header */}
       <div className="border-b border-border p-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
@@ -507,7 +466,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
             </p>
           </div>
           
-          {/* View mode selection */}
           <div className="flex items-center gap-1">
             <Button 
               variant={viewMode === 'icons' ? "default" : "outline"} 
@@ -549,7 +507,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
         </div>
       </div>
       
-      {/* Equipment category selection */}
       <div className="border-b border-border overflow-x-auto no-scrollbar">
         <div className="flex p-1">
           {equipmentCategories.map(category => (
@@ -572,7 +529,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
         </div>
       </div>
       
-      {/* Country selection panel */}
       <div className="border-b border-border p-3">
         <div className="flex flex-wrap gap-2 items-center">
           <span className="text-sm font-medium mr-1">Comparing:</span>
@@ -622,7 +578,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
           
           <div className="flex-1" />
           
-          {/* Settings & options */}
           <div className="flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
@@ -681,7 +636,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
         </div>
       </div>
       
-      {/* Main content */}
       <div className="flex-1 overflow-auto p-4">
         <AnimatePresence mode="wait">
           <motion.div
@@ -692,7 +646,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
             transition={{ duration: 0.2 }}
             className="h-full"
           >
-            {/* Category description */}
             <div className="flex items-start space-x-3 p-3 bg-muted/40 rounded-lg mb-4">
               <div className="p-2 rounded-md" style={{ backgroundColor: activeCategoryObj?.color + '20' }}>
                 {activeCategoryObj && <activeCategoryObj.icon
@@ -773,9 +726,7 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
                         )}
                       </div>
                       
-                      {/* Icon grid */}
                       <div className="space-y-2">
-                        {/* Full rows (5 icons each) */}
                         {Array.from({ length: fullRows }).map((_, rowIndex) => (
                           <div key={`row-${rowIndex}`} className="flex justify-between">
                             {Array.from({ length: 5 }).map((_, iconIndex) => (
@@ -799,7 +750,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
                           </div>
                         ))}
                         
-                        {/* Remainder row */}
                         {remainder > 0 && (
                           <div className="flex">
                             {Array.from({ length: remainder }).map((_, iconIndex) => (
@@ -825,7 +775,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
                         )}
                       </div>
                       
-                      {/* Progress bar */}
                       <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <motion.div 
                           className="h-full rounded-full"
@@ -1067,7 +1016,6 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
                     const countryColor = militaryData[country]?.color || activeCategoryObj?.color;
                     const histData = equipmentData[country].historicalData;
                     
-                    // Calculate growth rate from first to last year
                     const firstYearValue = histData[0][activeCategory] || 0;
                     const lastYearValue = histData[histData.length - 1][activeCategory] || 0;
                     const growthPercent = firstYearValue > 0 
