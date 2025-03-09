@@ -6,44 +6,44 @@
 
 @layer base {
   :root {
-    --background: 220 22% 8%;
-    --foreground: 0 0% 100%;
+    --background: 225 10% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 220 24% 6%;
+    --card: 225 12% 10%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 220 14% 5%;
+    --popover: 225 14% 5%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 34 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 30 95% 53%;  /* Brand orange */
+    --primary-foreground: 0 0% 9%;
 
     --secondary: 191 100% 44%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 220 14% 14%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 225 14% 14%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 191 100% 44%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 30 100% 60%;  /* Slightly lighter orange for accents */
+    --accent-foreground: 0 0% 9%;
 
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 14% 12%;
-    --input: 220 14% 12%;
-    --ring: 34 100% 50%;
+    --border: 225 14% 12%;
+    --input: 225 14% 12%;
+    --ring: 30 95% 53%;  /* Match primary */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 220 24% 4%;
+    --sidebar-background: 225 14% 6%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 34 100% 50%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 220 14% 8%;
+    --sidebar-primary: 30 95% 53%;
+    --sidebar-primary-foreground: 0 0% 9%;
+    --sidebar-accent: 225 14% 12%;
     --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 220 14% 10%;
-    --sidebar-ring: 34 100% 50%;
+    --sidebar-border: 225 14% 12%;
+    --sidebar-ring: 30 95% 53%;
   }
 
   * {
@@ -115,7 +115,7 @@
   }
   
   .status-badge {
-    @apply text-xs py-1 px-2 rounded-md;
+    @apply text-xs py-1 px-2 rounded-md font-medium;
   }
   
   .status-badge.warning {
@@ -123,7 +123,7 @@
   }
   
   .geo-heading {
-    @apply text-4xl font-bold leading-none tracking-tight;
+    @apply text-4xl font-bold leading-none tracking-tight text-foreground;
   }
   
   .geo-subheading {
@@ -131,14 +131,13 @@
   }
   
   .data-value {
-    @apply text-5xl font-bold;
+    @apply text-5xl font-bold text-foreground;
   }
   
   .data-label {
     @apply text-sm text-muted-foreground;
   }
 
-  /* Skeuomorphic Button Styles */
   .btn-skeuomorphic {
     @apply relative overflow-hidden text-sm font-medium rounded-md transition-all duration-300;
     box-shadow: 
@@ -165,9 +164,8 @@
       0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
-  /* Storytelling Area Styles */
   .story-chip {
-    @apply flex items-center px-3 py-2 rounded-lg border-2 border-secondary/70 bg-card shadow-lg cursor-grab transition-all duration-300;
+    @apply flex items-center px-3 py-2 rounded-lg border-2 border-accent/70 bg-card shadow-lg cursor-grab transition-all duration-300;
     box-shadow: 
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
       0 1px 3px rgba(0, 0, 0, 0.2),
@@ -175,7 +173,7 @@
   }
   
   .story-chip:hover {
-    @apply border-secondary shadow-xl;
+    @apply border-primary shadow-xl;
     transform: translateY(-2px);
   }
   

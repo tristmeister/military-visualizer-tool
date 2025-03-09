@@ -64,14 +64,22 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				military: {
-					us: '#1E88E5',
-					china: '#E53935',
-					russia: '#5E35B1',
-					uk: '#43A047',
-					france: '#FB8C00',
-					germany: '#757575',
-					eu: '#26A69A',
-					japan: '#8E24AA'
+					us: '#3B82F6',      // Brighter blue for better contrast
+					china: '#EF4444',   // Brighter red
+					russia: '#8B5CF6',  // Vibrant purple
+					uk: '#10B981',      // Brighter green
+					france: '#F59E0B',  // More saturated orange
+					germany: '#9CA3AF', // Lighter gray
+					eu: '#06B6D4',      // Brighter teal
+					japan: '#C026D3'    // Brighter purple
+				},
+				// New theme-specific colors
+				brand: {
+					orange: '#F97316', // Orange primary brand color
+					dark: '#1E1E24',   // Very dark grey for backgrounds
+					light: '#F3F4F6',  // Light color for text on dark backgrounds
+					muted: '#6B7280',  // Muted color for secondary text
+					accent: '#FB923C'  // Lighter orange for accents
 				}
 			},
 			borderRadius: {
