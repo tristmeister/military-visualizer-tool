@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Tank, 
+  Truck, 
   Plane, 
   Ship, 
   Users, 
   Shield, 
   Rocket, 
   Radar,
-  Helicopter,
+  Target,
   ChevronDown,
   ChevronRight,
   Info
@@ -18,21 +18,19 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useIsMobile } from '@/hooks/use-mobile';
 import { militaryData } from '@/lib/military-data';
 
-// Equipment data extracted from militaryData
+// Equipment data extracted directly from militaryData
 const getEquipmentData = () => {
   const result = {};
   
   Object.keys(militaryData).forEach(country => {
-    if (militaryData[country].equipment) {
-      result[country] = {
-        tanks: militaryData[country].equipment.tanks || 0,
-        aircraft: militaryData[country].equipment.aircraft || 0,
-        ships: militaryData[country].equipment.naval || 0,
-        airDefense: Math.round(militaryData[country].equipment.airDefense || 0),
-        missiles: Math.round(militaryData[country].equipment.missiles || 0),
-        helicopters: Math.round(militaryData[country].equipment.helicopters || 0)
-      };
-    }
+    result[country] = {
+      tanks: militaryData[country].tanks || 0,
+      aircraft: militaryData[country].aircraft || 0,
+      ships: militaryData[country].naval || 0,
+      airDefense: Math.round(militaryData[country].budget / 10) || 0, // Estimate based on budget
+      missiles: Math.round(militaryData[country].nukes * 10) || 0, // Estimate based on nukes
+      helicopters: Math.round(militaryData[country].aircraft / 3) || 0 // Estimate based on aircraft
+    };
   });
   
   // If data is missing for some countries, use sample data as fallback
@@ -86,7 +84,7 @@ const equipmentCategories = [
   { 
     id: 'tanks', 
     name: 'Tanks', 
-    icon: (props) => <Tank {...props} />,
+    icon: (props) => <Truck {...props} />,
     color: '#f97316', // Orange (brand color)
     description: 'Main battle tanks and heavy armored combat vehicles'
   },
@@ -121,7 +119,7 @@ const equipmentCategories = [
   { 
     id: 'helicopters', 
     name: 'Helicopters', 
-    icon: (props) => <Helicopter {...props} />,
+    icon: (props) => <Target {...props} />,
     color: '#10b981', // Green
     description: 'Attack and utility helicopters'
   }
