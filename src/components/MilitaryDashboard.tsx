@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, Search, Menu, X, ChevronRight } from 'lucide-react';
@@ -26,28 +25,24 @@ const MilitaryDashboard: React.FC = () => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    // Simulate loading for smoother animation
     const timer = setTimeout(() => {
       setIsLoaded(true);
     }, 500);
     return () => clearTimeout(timer);
   }, []);
 
-  // Close sidebar when transitioning from mobile to desktop
   useEffect(() => {
     if (!isMobile) {
       setSidebarOpen(false);
     }
   }, [isMobile]);
 
-  // Disable storytelling mode on mobile
   useEffect(() => {
     if (isMobile && showStorytelling) {
       setShowStorytelling(false);
     }
   }, [isMobile, showStorytelling]);
 
-  // Only show one special view at a time
   useEffect(() => {
     if (showStorytelling && showEquipmentViz) {
       setShowEquipmentViz(false);
@@ -86,7 +81,6 @@ const MilitaryDashboard: React.FC = () => {
     setSidebarOpen(prevState => !prevState);
   };
 
-  // Handle backdrop click to close sidebar on mobile
   const handleBackdropClick = () => {
     if (isMobile) {
       setSidebarOpen(false);
@@ -100,9 +94,7 @@ const MilitaryDashboard: React.FC = () => {
       initial="hidden"
       animate={isLoaded ? "visible" : "hidden"}
     >
-      {/* Main content */}
       <div className="flex h-screen relative">
-        {/* Mobile Backdrop */}
         {isMobile && sidebarOpen && (
           <div 
             className="mobile-sidebar-backdrop"
@@ -110,7 +102,6 @@ const MilitaryDashboard: React.FC = () => {
           />
         )}
 
-        {/* Sidebar */}
         <AnimatePresence>
           <motion.div 
             className={`
@@ -212,7 +203,6 @@ const MilitaryDashboard: React.FC = () => {
           </motion.div>
         </AnimatePresence>
         
-        {/* Main display area */}
         <motion.div 
           className="flex-1 overflow-hidden bg-background"
           variants={itemVariants}
