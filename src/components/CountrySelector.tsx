@@ -8,7 +8,7 @@ interface CountrySelectorProps {
   selectedCountries: string[];
   setSelectedCountries: (countries: string[]) => void;
   searchTerm: string;
-  setSearchTerm: (term: string) => void;
+  setSearchTerm?: (term: string) => void;
 }
 
 const CountrySelector: React.FC<CountrySelectorProps> = ({ 
@@ -69,7 +69,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
               onClick={() => handleToggleCountry(country)}
             >
               <div className="flex items-center w-full">
-                <span className="mr-2 text-base">{militaryData[country].flag}</span>
+                <span className="mr-2 text-base">{militaryData[country]?.flag || '🏳️'}</span>
                 <span className="flex-grow text-sm">{country}</span>
                 <motion.div 
                   animate={{ scale: isSelected ? 1 : 0.8, opacity: isSelected ? 1 : 0.5 }}

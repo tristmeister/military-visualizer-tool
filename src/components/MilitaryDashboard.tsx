@@ -1,29 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Search, Menu, X, ChevronRight } from 'lucide-react';
+
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { 
+  ShieldAlert, Search, Menu, X, ChevronRight, Globe, 
+  BarChart3, Settings, Share, Download, Info, 
+  Maximize2, RefreshCw, Clock, LineChart, Briefcase, Laptop
+} from 'lucide-react';
+import { useDebouncedState } from '@/hooks/use-debounced-state';
 import CountrySelector from './CountrySelector';
 import ComparisonPanel from './ComparisonPanel';
 import ChartSection from './ChartSection';
 import StrengthsWeaknessesPanel from './StrengthsWeaknessesPanel';
 import StorytellingArea from './StorytellingArea';
 import EquipmentVisualization from './EquipmentVisualization';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import { StatCategory } from '@/lib/military-data';
 import { useIsMobile } from '@/hooks/use-mobile';
 
+type ViewMode = 'comparison' | 'storytelling' | 'equipment';
+
 const MilitaryDashboard: React.FC = () => {
+  // Main state
   const [selectedCountries, setSelectedCountries] = useState<string[]>(
     ['United States', 'China', 'Russia', 'European Union']
   );
   const [activeStat, setActiveStat] = useState<StatCategory>('overview');
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [showStrengths, setShowStrengths] = useState(false);
-  const [showStorytelling, setShowStorytelling] = useState(false);
-  const [showEquipmentViz, setShowEquipmentViz] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [viewMode, setViewMode] = useState<ViewMode>('comparison');
+  const [searchTerm, useDebouncedSearchTerm, rawSearchTerm] = useDebouncedState('', 300);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showAnalysis, setShowAnalysis] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [compareYears, setCompareYears] = useState<boolean>(false);
+  const [comparisonYear, setComparisonYear] = useState<number>(2020);
+  
+  // Refs for DOM interactions
+  const dashboardRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
+  // Animation values
+  const refreshRotation = useMotionValue(0);
+  const dashboardOpacity = useMotionValue(1);
+  const dashboardY = useMotionValue(0);
+  const headerHeight = useMotionValue(isMobile ? 70 : 88);
+  const headerHeightPx = useTransform(headerHeight, height => `${height}px`);
+  const scrollYProgress = useMotionValue(0);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+
+  // Handle initial load animation
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoaded(true);
@@ -31,30 +60,108 @@ const MilitaryDashboard: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Reset sidebar on mobile/desktop switch
   useEffect(() => {
     if (!isMobile) {
       setSidebarOpen(false);
     }
   }, [isMobile]);
 
-  useEffect(() => {
-    if (isMobile && showStorytelling) {
-      setShowStorytelling(false);
-    }
-  }, [isMobile, showStorytelling]);
+  // Simulate data refresh
+  const handleRefreshData = async () => {
+    setIsRefreshing(true);
+    // Animate refresh icon
+    const animateRotation = async () => {
+      for (let i = 0; i < 2; i++) {
+        await new Promise(resolve => {
+          let startValue = i * 360;
+          const interval = setInterval(() => {
+            startValue += 10;
+            refreshRotation.set(startValue);
+            if (startValue >= (i + 1) * 360) {
+              clearInterval(interval);
+              resolve(null);
+            }
+          }, 16);
+        });
+      }
+    };
+    
+    await animateRotation();
+    setLastUpdated(new Date());
+    setIsRefreshing(false);
+    
+    toast({
+      title: "Data refreshed",
+      description: `Military data updated as of ${new Date().toLocaleString()}`,
+    });
+  };
 
-  useEffect(() => {
-    if (showStorytelling && showEquipmentViz) {
-      setShowEquipmentViz(false);
+  // Toggle fullscreen mode
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      dashboardRef.current?.requestFullscreen().catch(err => {
+        toast({
+          title: "Fullscreen error",
+          description: `Error attempting to enable fullscreen: ${err.message}`,
+          variant: "destructive",
+        });
+      });
+    } else {
+      document.exitFullscreen();
     }
-  }, [showStorytelling]);
+    setIsFullscreen(!isFullscreen);
+  };
 
+  // Handle fullscreen change events
   useEffect(() => {
-    if (showEquipmentViz && showStorytelling) {
-      setShowStorytelling(false);
-    }
-  }, [showEquipmentViz]);
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
+  // Export data as JSON
+  const handleExportData = () => {
+    // Simulate export functionality
+    const dummyData = {
+      timestamp: new Date().toISOString(),
+      countries: selectedCountries,
+      category: activeStat,
+      viewMode: viewMode
+    };
+    
+    const dataStr = JSON.stringify(dummyData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `military-data-export-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Export successful",
+      description: "Military data has been exported to JSON"
+    });
+  };
+
+  // Handle sharing functionality
+  const handleShareDashboard = () => {
+    // In a real app, this would generate a shareable link or open a share dialog
+    navigator.clipboard.writeText(window.location.href);
+    
+    toast({
+      title: "Link copied",
+      description: "Dashboard URL copied to clipboard"
+    });
+  };
+
+  // Container animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -62,7 +169,7 @@ const MilitaryDashboard: React.FC = () => {
       transition: { 
         duration: 0.5,
         when: "beforeChildren",
-        staggerChildren: 0.2
+        staggerChildren: 0.1
       }
     }
   };
@@ -73,28 +180,66 @@ const MilitaryDashboard: React.FC = () => {
       y: 0,
       opacity: 1,
       transition: { duration: 0.5 }
+    },
+    exit: {
+      y: -10,
+      opacity: 0,
+      transition: { duration: 0.3 }
     }
   };
 
+  // Handle mobile sidebar toggle
   const toggleSidebar = () => {
-    console.log("Toggle sidebar called, current state:", sidebarOpen);
     setSidebarOpen(prevState => !prevState);
   };
 
+  // Close sidebar when backdrop clicked
   const handleBackdropClick = () => {
     if (isMobile) {
       setSidebarOpen(false);
     }
   };
 
+  // Handle view mode change
+  const handleViewModeChange = (mode: ViewMode) => {
+    // Add entrance animation for new view
+    dashboardOpacity.set(0);
+    dashboardY.set(20);
+    
+    setTimeout(() => {
+      setViewMode(mode);
+      setTimeout(() => {
+        dashboardOpacity.set(1);
+        dashboardY.set(0);
+      }, 50);
+    }, 300);
+  };
+
+  // Handle scroll events
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollY = e.currentTarget.scrollTop;
+    const scrollHeight = e.currentTarget.scrollHeight;
+    const clientHeight = e.currentTarget.clientHeight;
+    const maxScroll = scrollHeight - clientHeight;
+
+    scrollYProgress.set(scrollY / (maxScroll || 1));
+    // Dynamic header height based on scroll
+    const newHeight = isMobile 
+      ? Math.max(50, 70 - scrollY * 0.1)
+      : Math.max(70, 88 - scrollY * 0.1);
+    headerHeight.set(newHeight);
+  };
+
   return (
     <motion.div 
+      ref={dashboardRef}
       className="min-h-screen bg-background"
       variants={containerVariants}
       initial="hidden"
       animate={isLoaded ? "visible" : "hidden"}
     >
       <div className="flex h-screen relative">
+        {/* Mobile backdrop when sidebar is open */}
         {isMobile && sidebarOpen && (
           <div 
             className="mobile-sidebar-backdrop"
@@ -102,12 +247,13 @@ const MilitaryDashboard: React.FC = () => {
           />
         )}
 
+        {/* Sidebar / Control Panel */}
         <AnimatePresence>
           <motion.div 
             className={`
               mobile-sidebar
               ${isMobile && !sidebarOpen ? 'mobile-sidebar-hidden' : ''}
-              ${isMobile ? '' : 'w-64'} 
+              ${isMobile ? '' : 'w-72'} 
               bg-sidebar-background text-sidebar-foreground border-r border-border 
               flex flex-col
             `}
@@ -115,10 +261,12 @@ const MilitaryDashboard: React.FC = () => {
             animate={isMobile ? { x: sidebarOpen ? 0 : "-100%" } : { x: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
+            {/* Sidebar Header */}
             <div className="p-4 border-b border-border flex items-center justify-between">
               <div className="flex items-center">
                 <ShieldAlert className="w-6 h-6 text-primary mr-2" />
                 <span className="font-bold tracking-tight">GEO.WARRIOR</span>
+                <span className="text-xs ml-2 px-1.5 py-0.5 bg-primary/20 text-primary rounded-md">PRO</span>
               </div>
               {isMobile && (
                 <button 
@@ -131,6 +279,7 @@ const MilitaryDashboard: React.FC = () => {
               )}
             </div>
             
+            {/* Country Selection & Search */}
             <div className="p-4">
               <div className="relative mb-4">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -138,8 +287,8 @@ const MilitaryDashboard: React.FC = () => {
                   type="text"
                   placeholder="Search countries..."
                   className="w-full bg-muted border border-border rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => useDebouncedSearchTerm(e.target.value)}
+                  value={rawSearchTerm}
                 />
               </div>
               
@@ -148,10 +297,51 @@ const MilitaryDashboard: React.FC = () => {
                   selectedCountries={selectedCountries} 
                   setSelectedCountries={setSelectedCountries}
                   searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
+                  setSearchTerm={useDebouncedSearchTerm}
                 />
                 
-                <div className="pt-4">
+                {/* Year Selector */}
+                <div className="border-t border-border pt-4 mt-4">
+                  <div className="mb-2 flex justify-between items-center">
+                    <p className="text-sm font-medium">Year</p>
+                    <div className="flex items-center">
+                      <button 
+                        onClick={() => setCompareYears(!compareYears)}
+                        className={`text-xs px-2 py-1 rounded ${compareYears ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
+                      >
+                        Compare
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="range"
+                      min="2000"
+                      max="2030"
+                      value={selectedYear}
+                      onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                      className="flex-1 h-2 rounded-lg appearance-none cursor-pointer bg-muted"
+                    />
+                    <span className="w-12 text-center text-sm font-bold">{selectedYear}</span>
+                  </div>
+                  
+                  {compareYears && (
+                    <div className="mt-2 flex gap-2 items-center">
+                      <input
+                        type="range"
+                        min="2000"
+                        max="2030"
+                        value={comparisonYear}
+                        onChange={(e) => setComparisonYear(parseInt(e.target.value))}
+                        className="flex-1 h-2 rounded-lg appearance-none cursor-pointer bg-muted"
+                      />
+                      <span className="w-12 text-center text-sm font-bold">{comparisonYear}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Stat Categories */}
+                <div className="pt-2">
                   <ComparisonPanel 
                     activeStat={activeStat} 
                     setActiveStat={setActiveStat} 
@@ -160,55 +350,126 @@ const MilitaryDashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-auto border-t border-border p-4 space-y-2">
-              <motion.button
-                onClick={() => setShowStrengths(!showStrengths)}
-                className={`w-full flex items-center justify-center p-2 rounded-md text-sm btn-skeuomorphic ${showStrengths ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+            {/* Analysis Toggle */}
+            <div className="px-4 py-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className={`w-full flex items-center justify-between ${showAnalysis ? 'border-primary text-primary' : ''}`}
+                onClick={() => setShowAnalysis(!showAnalysis)}
               >
-                {showStrengths ? 'Hide Analysis' : 'Show Strengths & Weaknesses'}
-              </motion.button>
+                <span className="flex items-center gap-1">
+                  <LineChart className="w-4 h-4" />
+                  <span>Show Analysis</span>
+                </span>
+                <ChevronRight className={`h-4 w-4 transition-transform ${showAnalysis ? 'rotate-90' : ''}`} />
+              </Button>
+            </div>
+            
+            {/* Quick Actions */}
+            <div className="mt-auto border-t border-border p-4 space-y-2">
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 flex items-center justify-center gap-1 btn-skeuomorphic"
+                  onClick={handleShareDashboard}
+                >
+                  <Share className="w-4 h-4" />
+                  <span className="text-xs">Share</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 flex items-center justify-center gap-1 btn-skeuomorphic"
+                  onClick={handleExportData}
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="text-xs">Export</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 flex items-center justify-center gap-1 btn-skeuomorphic"
+                  onClick={toggleFullscreen}
+                >
+                  <Maximize2 className="w-4 h-4" />
+                  <span className="text-xs">Expand</span>
+                </Button>
+              </div>
               
-              {!isMobile && (
-                <>
-                  <motion.button
-                    onClick={() => {
-                      setShowStorytelling(!showStorytelling);
-                      if (!showStorytelling) setShowEquipmentViz(false);
-                    }}
-                    className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showStorytelling ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground'}`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span>Storytelling Mode</span>
-                    <ChevronRight className={`h-4 w-4 transition-transform ${showStorytelling ? 'rotate-90' : ''}`} />
-                  </motion.button>
-                  
-                  <motion.button
-                    onClick={() => {
-                      setShowEquipmentViz(!showEquipmentViz);
-                      if (!showEquipmentViz) setShowStorytelling(false);
-                    }}
-                    className={`w-full flex items-center justify-between p-2 rounded-md text-sm btn-skeuomorphic ${showEquipmentViz ? 'bg-brand-orange text-white' : 'bg-muted text-muted-foreground'}`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span>Equipment Visualization</span>
-                    <ChevronRight className={`h-4 w-4 transition-transform ${showEquipmentViz ? 'rotate-90' : ''}`} />
-                  </motion.button>
-                </>
-              )}
+              <div className="flex">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 flex items-center justify-center gap-1 bg-primary/10 border-primary/30 text-primary btn-skeuomorphic"
+                  onClick={handleRefreshData}
+                  disabled={isRefreshing}
+                >
+                  <motion.div style={{ rotate: refreshRotation }}>
+                    <RefreshCw className="w-4 h-4" />
+                  </motion.div>
+                  <span className="text-xs">{isRefreshing ? 'Updating...' : 'Refresh Data'}</span>
+                </Button>
+              </div>
+              
+              <div className="text-xs text-center text-muted-foreground pt-1">
+                Last updated: {lastUpdated.toLocaleTimeString()}
+              </div>
+            </div>
+            
+            {/* View Mode Selector */}
+            <div className="px-4 pt-2 pb-4 border-t border-border">
+              <h3 className="text-sm font-medium mb-2">View Modes</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant={viewMode === 'comparison' ? 'default' : 'outline'}
+                  size="sm"
+                  className={`flex items-center justify-center gap-1 ${viewMode === 'comparison' ? 'bg-primary text-primary-foreground' : ''}`}
+                  onClick={() => handleViewModeChange('comparison')}
+                >
+                  <BarChart3 className="w-3 h-3" />
+                  <span>Compare</span>
+                </Button>
+                <Button 
+                  variant={viewMode === 'equipment' ? 'default' : 'outline'}
+                  size="sm"
+                  className={`flex items-center justify-center gap-1 ${viewMode === 'equipment' ? 'bg-accent text-accent-foreground' : ''}`}
+                  onClick={() => handleViewModeChange('equipment')}
+                >
+                  <Briefcase className="w-3 h-3" />
+                  <span>Equipment</span>
+                </Button>
+                <Button 
+                  variant={viewMode === 'storytelling' ? 'default' : 'outline'}
+                  size="sm"
+                  className="flex items-center justify-center gap-1 col-span-2"
+                  onClick={() => handleViewModeChange('storytelling')}
+                >
+                  <Laptop className="w-3 h-3" />
+                  <span>Storytelling</span>
+                </Button>
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>
         
+        {/* Main Content Area */}
         <motion.div 
-          className="flex-1 overflow-hidden bg-background"
-          variants={itemVariants}
+          className="flex-1 overflow-hidden"
+          style={{ 
+            opacity: dashboardOpacity,
+            y: dashboardY
+          }}
         >
           <div className="h-full flex flex-col">
-            <header className="bg-card/60 backdrop-blur-sm border-b border-border p-4 md:p-6 flex items-center">
+            <motion.header 
+              className="bg-card/60 backdrop-blur-sm border-b border-border p-4 md:p-6 flex items-center z-10"
+              style={{ 
+                height: headerHeightPx,
+                opacity: headerOpacity
+              }}
+            >
               {isMobile && (
                 <button 
                   onClick={toggleSidebar} 
@@ -218,19 +479,32 @@ const MilitaryDashboard: React.FC = () => {
                 </button>
               )}
               <div>
-                <h1 className={`text-2xl md:text-4xl font-bold leading-none tracking-tight ${isMobile ? 'text-left' : ''}`}>Military Comparison</h1>
-                <p className="geo-subheading text-sm md:text-xl">Global powers analysis</p>
+                <motion.h1 
+                  className="text-2xl md:text-4xl font-bold leading-none tracking-tight"
+                  layoutId="dashboard-title"
+                >
+                  Military Comparison
+                </motion.h1>
+                <motion.p 
+                  className="geo-subheading text-sm md:text-xl"
+                  layoutId="dashboard-subtitle"
+                >
+                  Global powers analysis
+                </motion.p>
               </div>
               <div className="ml-auto hidden md:flex gap-2">
                 <div className="px-3 py-1 rounded-md bg-card border border-border text-muted-foreground text-sm">
                   {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                 </div>
               </div>
-            </header>
+            </motion.header>
             
-            <div className="flex-1 overflow-auto p-3 md:p-6">
+            <div 
+              className="flex-1 overflow-auto p-3 md:p-6"
+              onScroll={handleScroll}
+            >
               <AnimatePresence mode="wait">
-                {!showStorytelling && !showEquipmentViz ? (
+                {viewMode === 'comparison' && (
                   <motion.div
                     key="comparison"
                     initial={{ opacity: 0, y: 10 }}
@@ -242,10 +516,10 @@ const MilitaryDashboard: React.FC = () => {
                     <ChartSection 
                       selectedCountries={selectedCountries} 
                       activeStat={activeStat} 
-                      className={`${showStrengths ? "w-full md:w-3/4" : "w-full"}`}
+                      className={`${showAnalysis ? "w-full md:w-3/4" : "w-full"}`}
                     />
                     
-                    {showStrengths && (
+                    {showAnalysis && (
                       <motion.div 
                         initial={{ opacity: 0, x: isMobile ? 0 : 50, y: isMobile ? 20 : 0 }}
                         animate={{ opacity: 1, x: 0, y: 0 }}
@@ -256,7 +530,9 @@ const MilitaryDashboard: React.FC = () => {
                       </motion.div>
                     )}
                   </motion.div>
-                ) : showStorytelling ? (
+                )}
+                
+                {viewMode === 'storytelling' && (
                   <motion.div
                     key="storytelling"
                     initial={{ opacity: 0, y: 10 }}
@@ -267,7 +543,9 @@ const MilitaryDashboard: React.FC = () => {
                   >
                     <StorytellingArea />
                   </motion.div>
-                ) : (
+                )}
+                
+                {viewMode === 'equipment' && (
                   <motion.div
                     key="equipment"
                     initial={{ opacity: 0, y: 10 }}
