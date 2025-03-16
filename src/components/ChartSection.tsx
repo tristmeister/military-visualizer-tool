@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Treemap, LineChart, Line } from 'recharts';
 import { formatNumber, getRadarData, getBudgetData, getPersonnelData, getEquipmentData, getNuclearData, getHistoricalBudgetData, getHistoricalNukesData, militaryData, getSubmarineData, getInternationalBasesData } from '@/lib/military-data';
 import { StatCategory } from '@/lib/military-data';
-import { Plane, Shield, Anchor, AlertTriangle, Submarine, Globe } from 'lucide-react';
+import { Plane, Shield, Anchor, AlertTriangle, Globe } from 'lucide-react';
+import { ShipIcon } from './ui/custom-icons';
 
 interface ChartSectionProps {
   selectedCountries: string[];
@@ -552,7 +552,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
           <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6 chart-container">
             {renderCardHeader("Submarine Fleet")}
             <div className="flex items-center justify-center mb-3">
-              <Submarine className="w-10 h-10 text-blue-500" />
+              <ShipIcon className="w-10 h-10 text-blue-500" />
             </div>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -866,3 +866,4 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
 };
 
 export default ChartSection;
+

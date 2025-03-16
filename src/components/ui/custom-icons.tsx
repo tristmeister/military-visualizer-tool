@@ -26,6 +26,7 @@ import {
 export const TankIcon = (props: LucideProps) => <Truck {...props} />;
 export const PlaneIcon = (props: LucideProps) => <Plane {...props} />;
 export const ShipIcon = (props: LucideProps) => <Ship {...props} />;
+export const SubmarineIcon = (props: LucideProps) => <Ship {...props} />; // Using Ship as fallback for Submarine
 export const ShieldIcon = (props: LucideProps) => <Shield {...props} />;
 export const RocketIcon = (props: LucideProps) => <Rocket {...props} />;
 export const HelicopterIcon = (props: LucideProps) => <Target {...props} />;
