@@ -1,615 +1,712 @@
-export type MilitaryData = {
-  color: string;
-  flag: string;
-  personnel: number;
-  reserve: number;
-  budget: number; // in billions USD
-  gdpPercent: number; // defense budget as % of GDP
-  aircraft: number;
-  tanks: number;
-  naval: number;
-  submarines?: number;
-  nukes: number;
-  bases: number;
-  internationalBases?: number;
-  techIndex: number;
-  population: number; // in millions
-  strengths: string[];
-  weaknesses: string[];
-  historicalBudget: { year: number; value: number }[];
-  historicalNukes: { year: number; value: number }[];
-  projections?: {
-    budget: { year: number; value: number }[];
-    personnel: { year: number; value: number }[];
-    nukes: { year: number; value: number }[];
-  };
-};
-
-export type CountryData = Record<string, MilitaryData>;
-
+// Types
 export type StatCategory = 'overview' | 'personnel' | 'budget' | 'equipment' | 'nuclear' | 'historical';
 
-export type StoryChip = {
+export interface StoryChip {
   id: string;
   title: string;
   description: string;
-  icon: string;
   category: 'economic' | 'geopolitical' | 'technological' | 'conflict';
+  icon: string;
   impact: {
     country: string;
-    metric: 'budget' | 'personnel' | 'nukes' | 'techIndex';
+    metric: string;
     effect: 'increase' | 'decrease';
-    amount: number; // percentage change;
+    amount: number;
     startYear: number;
   };
-};
+}
 
-export const militaryData: CountryData = {
+// Military data for countries
+export const militaryData: Record<string, any> = {
   'United States': {
-    color: '#1E88E5',
     flag: '🇺🇸',
-    personnel: 1374000,
+    color: '#3C78D8',
+    budget: 800,
+    gdpPercent: 3.7,
+    active: 1400000,
     reserve: 800000,
-    budget: 877,
-    gdpPercent: 3.5,
-    aircraft: 2000,
-    tanks: 5500,
-    naval: 416,
+    population: 331000000,
+    aircraft: 13200,
+    tanks: 6200,
+    naval: 490,
     submarines: 68,
-    nukes: 5428,
-    bases: 4000,
+    nukes: 5500,
     internationalBases: 750,
-    techIndex: 10,
-    population: 338.3,
+    domesticBases: 440,
+    tech: 95,
     strengths: [
-      'Global power projection with extensive network of overseas bases and aircraft carrier strike groups',
-      'Cutting-edge military technology (stealth aircraft, precision weapons, C4ISR) and robust R&D ecosystem',
-      'Large defense budget (~$877 billion) enabling well-funded training, logistics, and force readiness',
-      'Strong nuclear triad (land, sea, air) with ~5,428 warheads ensuring strategic deterrence',
-      'Alliances and global partnerships (NATO and others) multiply force effectiveness and strategic reach'
+      'Largest defense budget globally',
+      'Advanced technological capabilities',
+      'Global power projection',
+      'Superior naval forces',
+      'Advanced air superiority'
     ],
     weaknesses: [
-      'Overextended deployments and global commitments can strain personnel and resources over time (e.g. long wars in Iraq/Afghanistan)',
-      'Rising costs of advanced equipment and maintenance (high-tech forces are expensive to sustain)',
-      'Challenges in adapting to asymmetric/guerrilla warfare despite superior conventional power (as seen in protracted insurgencies)',
-      'Domestic political divisions and budget uncertainty can impact long-term defense planning and procurement efficiency',
-      'Relatively modest troop numbers vs. rivals (1.38 million active) require force multipliers; heavy reliance on high-tech can be a vulnerability if technologies are countered'
-    ],
-    historicalBudget: [
-      { year: 2018, value: 649 },
-      { year: 2019, value: 732 },
-      { year: 2020, value: 778 },
-      { year: 2021, value: 801 },
-      { year: 2022, value: 877 }
-    ],
-    historicalNukes: [
-      { year: 1990, value: 10904 },
-      { year: 2000, value: 10577 },
-      { year: 2010, value: 5066 },
-      { year: 2020, value: 3750 },
-      { year: 2022, value: 3708 }
-    ],
-    projections: {
-      budget: [
-        { year: 2023, value: 916 },
-        { year: 2025, value: 950 },
-        { year: 2030, value: 1100 },
-        { year: 2035, value: 1250 }
-      ],
-      personnel: [
-        { year: 2023, value: 1370000 },
-        { year: 2025, value: 1380000 },
-        { year: 2030, value: 1400000 },
-        { year: 2035, value: 1420000 }
-      ],
-      nukes: [
-        { year: 2023, value: 5244 },
-        { year: 2025, value: 5000 },
-        { year: 2030, value: 4800 },
-        { year: 2035, value: 4500 }
-      ]
-    }
+      'High operational costs',
+      'Political constraints on military action',
+      'Overextended global commitments'
+    ]
   },
   'China': {
-    color: '#E53935',
     flag: '🇨🇳',
-    personnel: 2035000,
+    color: '#DB4437',
+    budget: 229,
+    gdpPercent: 1.7,
+    active: 2185000,
     reserve: 510000,
-    budget: 292,
-    gdpPercent: 1.6,
-    aircraft: 1900,
-    tanks: 5000,
-    naval: 720,
-    submarines: 61,
+    population: 1400000000,
+    aircraft: 3260,
+    tanks: 5800,
+    naval: 350,
+    submarines: 79,
     nukes: 350,
-    bases: 3000,
     internationalBases: 5,
-    techIndex: 8,
-    population: 1412,
+    domesticBases: 293,
+    tech: 80,
     strengths: [
-      'World\'s largest active military manpower (~2.0 million) provides substantial ground forces',
-      'Rapid military modernization and industrial expansion – defense budget grew ~5%+ annually for 27 years',
-      'Largest navy in the world by number of warships (~355 battle-force ships) and a growing blue-water capability',
-      'Robust missile forces (e.g. DF-series ballistic missiles and anti-ship missiles) creating strong A2/AD (area-denial) envelope in Asia',
-      'Nuclear arsenal increasing quickly (from ~400 warheads to an expected 1,000+ by 2030) to enhance strategic deterrence'
+      'Largest standing army',
+      'Growing naval capabilities',
+      'Rapid military modernization',
+      'Strong domestic defense industry',
+      'Advanced missile systems'
     ],
     weaknesses: [
-      'Limited recent combat experience – the PLA has not fought a major war in over 40 years, raising uncertainty about operational effectiveness',
-      'Still lags top-tier technology in some areas (e.g. jet engines, undersea warfare); overall military tech level trails the U.S.',
-      'Nuclear stockpile remains relatively small (~350-400 warheads) compared to U.S. and Russia, though growing',
-      'Geopolitical constraints: few formal allies or forward bases (only a handful of overseas bases) limit global reach',
-      'Command and control and joint interoperability are improving but unproven at scale – transitioning from a quantity-focused force to a high-tech, integrated force is ongoing'
-    ],
-    historicalBudget: [
-      { year: 2018, value: 250 },
-      { year: 2019, value: 261 },
-      { year: 2020, value: 252 },
-      { year: 2021, value: 293 },
-      { year: 2022, value: 292 }
-    ],
-    historicalNukes: [
-      { year: 1990, value: 232 },
-      { year: 2000, value: 232 },
-      { year: 2010, value: 240 },
-      { year: 2020, value: 400 },
-      { year: 2022, value: 410 }
-    ],
-    projections: {
-      budget: [
-        { year: 2023, value: 310 },
-        { year: 2025, value: 360 },
-        { year: 2030, value: 736 },
-        { year: 2035, value: 900 }
-      ],
-      personnel: [
-        { year: 2023, value: 2000000 },
-        { year: 2025, value: 2000000 },
-        { year: 2030, value: 1950000 },
-        { year: 2035, value: 1900000 }
-      ],
-      nukes: [
-        { year: 2023, value: 410 },
-        { year: 2025, value: 600 },
-        { year: 2030, value: 1000 },
-        { year: 2035, value: 1500 }
-      ]
-    }
+      'Limited combat experience',
+      'Quality issues with some equipment',
+      'Limited power projection capabilities'
+    ]
   },
   'Russia': {
-    color: '#5E35B1',
     flag: '🇷🇺',
-    personnel: 1000000,
-    reserve: 2000000,
-    budget: 86.4,
+    color: '#4285F4',
+    budget: 65,
     gdpPercent: 4.1,
-    aircraft: 810,
-    tanks: 12566,
-    naval: 533,
-    submarines: 65,
-    nukes: 5899,
-    bases: 1000,
-    internationalBases: 30,
-    techIndex: 6,
-    population: 144.7,
-    strengths: [
-      'World\'s largest tank fleet (~12,500) and heavy artillery force, giving it massive ground firepower',
-      'Extensive nuclear arsenal (~5,889 total warheads) – the largest in the world – providing parity with the U.S. in strategic weapons',
-      'Strong integrated air defense systems (e.g. S-400, S-300) covering key regions, and advanced missile technology (hypersonic glide vehicles, anti-ship missiles)',
-      'Significant combat experience in recent conflicts (e.g. operations in Syria, and ongoing war in Ukraine) – a battle-hardened officer corps (though at high cost)',
-      'Large domestic arms industry inherited from Soviet era – capable of producing a full spectrum of military hardware (tanks, jets, submarines, etc.), albeit with mixed modernity'
-    ],
-    weaknesses: [
-      'Limited defense budget (~$86 billion) – only a fraction of U.S./China spending – constrains procurement and R&D',
-      'Aging military equipment and maintenance problems; reliance on outdated Soviet-era platforms – many aircraft and ships are not modernized, and high-loss rates in Ukraine highlight these shortfalls',
-      'Economic and industrial base is relatively weak (Russia\'s GDP and tech sector are much smaller than China\'s/US\'s), undermining long-term military competitiveness',
-      'Over-reliance on its nuclear arsenal for great-power status, indicating a gap in conventional capabilities – conventional forces have struggled against well-equipped opposition despite numerical strength',
-      'Logistical and organizational issues – as seen in the 2022 Ukraine campaign – including poor supply lines and conscript-heavy units, which reduce overall efficiency and effectiveness in sustained operations'
-    ],
-    historicalBudget: [
-      { year: 2018, value: 61.4 },
-      { year: 2019, value: 65.1 },
-      { year: 2020, value: 64.0 },
-      { year: 2021, value: 65.9 },
-      { year: 2022, value: 86.4 }
-    ],
-    historicalNukes: [
-      { year: 1990, value: 37000 },
-      { year: 2000, value: 21500 },
-      { year: 2010, value: 12000 },
-      { year: 2020, value: 6375 },
-      { year: 2022, value: 6200 }
-    ],
-    projections: {
-      budget: [
-        { year: 2023, value: 109 },
-        { year: 2025, value: 130 },
-        { year: 2030, value: 150 },
-        { year: 2035, value: 170 }
-      ],
-      personnel: [
-        { year: 2023, value: 1000000 },
-        { year: 2025, value: 1500000 },
-        { year: 2030, value: 1500000 },
-        { year: 2035, value: 1500000 }
-      ],
-      nukes: [
-        { year: 2023, value: 5899 },
-        { year: 2025, value: 6000 },
-        { year: 2030, value: 6300 },
-        { year: 2035, value: 6500 }
-      ]
-    }
-  },
-  'European Union': {
-    color: '#26A69A',
-    flag: '🇪🇺',
-    personnel: 1400000,
+    active: 900000,
     reserve: 2000000,
-    budget: 245,
-    gdpPercent: 1.5,
-    aircraft: 2000,
-    tanks: 5000,
-    naval: 520,
-    nukes: 290,
-    bases: 30,
-    techIndex: 8,
-    population: 447,
+    population: 144000000,
+    aircraft: 4173,
+    tanks: 12950,
+    naval: 605,
+    submarines: 58,
+    nukes: 6257,
+    internationalBases: 21,
+    domesticBases: 187,
+    tech: 75,
     strengths: [
-      'Robust industrial base',
-      'Highly advanced technology in select member states',
-      'Collective economic power'
+      'Largest nuclear arsenal',
+      'Strong land forces',
+      'Advanced air defense systems',
+      'Significant combat experience',
+      'Electronic warfare capabilities'
     ],
     weaknesses: [
-      'Fragmented command structures',
-      'Varying degrees of military readiness among member states',
-      'Reliance on external partners for some strategic capabilities'
+      'Aging equipment',
+      'Economic constraints',
+      'Demographic challenges affecting recruitment'
+    ]
+  },
+  'India': {
+    flag: '🇮🇳',
+    color: '#F4B400',
+    budget: 72.9,
+    gdpPercent: 2.4,
+    active: 1450000,
+    reserve: 1155000,
+    population: 1380000000,
+    aircraft: 2123,
+    tanks: 4614,
+    naval: 295,
+    submarines: 16,
+    nukes: 160,
+    internationalBases: 1,
+    domesticBases: 160,
+    tech: 70,
+    strengths: [
+      'Large manpower',
+      'Growing naval capabilities',
+      'Developing domestic defense industry',
+      'Strategic location in Indian Ocean'
     ],
-    historicalBudget: [
-      { year: 2018, value: 210 },
-      { year: 2019, value: 215 },
-      { year: 2020, value: 220 },
-      { year: 2021, value: 230 },
-      { year: 2022, value: 245 }
+    weaknesses: [
+      'Bureaucratic procurement process',
+      'Reliance on foreign military equipment',
+      'Border security challenges'
+    ]
+  },
+  'United Kingdom': {
+    flag: '🇬🇧',
+    color: '#0F52BA',
+    budget: 68.4,
+    gdpPercent: 2.2,
+    active: 150000,
+    reserve: 45000,
+    population: 67000000,
+    aircraft: 693,
+    tanks: 227,
+    naval: 75,
+    submarines: 11,
+    nukes: 225,
+    internationalBases: 17,
+    domesticBases: 50,
+    tech: 90,
+    strengths: [
+      'Advanced naval capabilities',
+      'Strong special forces',
+      'High-tech equipment',
+      'NATO membership',
+      'Global intelligence network'
     ],
-    historicalNukes: [
-      { year: 1990, value: 500 },
-      { year: 2000, value: 400 },
-      { year: 2010, value: 300 },
-      { year: 2020, value: 290 },
-      { year: 2022, value: 290 }
+    weaknesses: [
+      'Limited manpower',
+      'Reduced force size due to budget cuts',
+      'Aging equipment in some areas'
+    ]
+  },
+  'France': {
+    flag: '🇫🇷',
+    color: '#4B92DB',
+    budget: 52.7,
+    gdpPercent: 2.1,
+    active: 205000,
+    reserve: 35000,
+    population: 65000000,
+    aircraft: 1055,
+    tanks: 406,
+    naval: 180,
+    submarines: 10,
+    nukes: 290,
+    internationalBases: 11,
+    domesticBases: 65,
+    tech: 88,
+    strengths: [
+      'Independent nuclear deterrent',
+      'Strong expeditionary capabilities',
+      'Advanced aerospace industry',
+      'Significant presence in Africa'
     ],
-    projections: {
-      budget: [
-        { year: 2023, value: 260 },
-        { year: 2025, value: 280 },
-        { year: 2030, value: 320 },
-        { year: 2035, value: 370 }
-      ],
-      personnel: [
-        { year: 2023, value: 1450000 },
-        { year: 2025, value: 1480000 },
-        { year: 2030, value: 1500000 },
-        { year: 2035, value: 1520000 }
-      ],
-      nukes: [
-        { year: 2023, value: 290 },
-        { year: 2025, value: 285 },
-        { year: 2030, value: 280 },
-        { year: 2035, value: 280 }
-      ]
-    }
+    weaknesses: [
+      'Limited defense budget',
+      'Stretched forces due to multiple deployments',
+      'Aging equipment in some areas'
+    ]
+  },
+  'Japan': {
+    flag: '🇯🇵',
+    color: '#E03131',
+    budget: 49.1,
+    gdpPercent: 1.0,
+    active: 247000,
+    reserve: 56000,
+    population: 126000000,
+    aircraft: 1480,
+    tanks: 1004,
+    naval: 155,
+    submarines: 22,
+    nukes: 0,
+    internationalBases: 0,
+    domesticBases: 47,
+    tech: 92,
+    strengths: [
+      'Advanced naval capabilities',
+      'Modern air force',
+      'High-tech equipment',
+      'Strong alliance with the US',
+      'Advanced missile defense'
+    ],
+    weaknesses: [
+      'Constitutional limitations on military action',
+      'Limited offensive capabilities',
+      'No nuclear deterrent'
+    ]
+  },
+  'South Korea': {
+    flag: '🇰🇷',
+    color: '#228BE6',
+    budget: 45.7,
+    gdpPercent: 2.8,
+    active: 599000,
+    reserve: 3100000,
+    population: 51000000,
+    aircraft: 1614,
+    tanks: 2614,
+    naval: 166,
+    submarines: 22,
+    nukes: 0,
+    internationalBases: 0,
+    domesticBases: 76,
+    tech: 85,
+    strengths: [
+      'Large, well-trained military',
+      'Modern equipment',
+      'Strong domestic defense industry',
+      'US military presence and support'
+    ],
+    weaknesses: [
+      'Threat from North Korea',
+      'Limited power projection capabilities',
+      'Demographic challenges'
+    ]
   },
   'Germany': {
-    color: '#5a5a5a',
     flag: '🇩🇪',
-    personnel: 183000,
-    reserve: 30000,
-    budget: 56,
+    color: '#5C940D',
+    budget: 52.8,
     gdpPercent: 1.4,
-    aircraft: 710,
-    tanks: 250,
+    active: 184000,
+    reserve: 30000,
+    population: 83000000,
+    aircraft: 617,
+    tanks: 266,
     naval: 80,
+    submarines: 6,
     nukes: 0,
-    bases: 15,
-    techIndex: 8,
-    population: 83,
+    internationalBases: 3,
+    domesticBases: 62,
+    tech: 87,
     strengths: [
-      'Highly advanced industrial and technological capacity',
-      'Strong economy supporting defense investments',
-      'Central location in Europe aiding rapid deployment'
+      'Modern equipment',
+      'Strong industrial base',
+      'NATO membership',
+      'Central position in Europe'
     ],
     weaknesses: [
-      'Historically limited defense spending relative to GDP',
-      'Aging equipment and modernization backlogs',
-      'Constraints on overseas force projection'
-    ],
-    historicalBudget: [
-      { year: 2018, value: 45 },
-      { year: 2019, value: 49 },
-      { year: 2020, value: 52 },
-      { year: 2021, value: 54 },
-      { year: 2022, value: 56 }
-    ],
-    historicalNukes: [
-      { year: 1990, value: 0 },
-      { year: 2000, value: 0 },
-      { year: 2010, value: 0 },
-      { year: 2020, value: 0 },
-      { year: 2022, value: 0 }
-    ],
-    projections: {
-      budget: [
-        { year: 2023, value: 64 },
-        { year: 2025, value: 70 },
-        { year: 2030, value: 80 },
-        { year: 2035, value: 95 }
-      ],
-      personnel: [
-        { year: 2023, value: 183000 },
-        { year: 2025, value: 185000 },
-        { year: 2030, value: 190000 },
-        { year: 2035, value: 200000 }
-      ],
-      nukes: [
-        { year: 2023, value: 0 },
-        { year: 2025, value: 0 },
-        { year: 2030, value: 0 },
-        { year: 2035, value: 0 }
-      ]
-    }
+      'Underfunded military',
+      'Limited operational readiness',
+      'Political constraints on military action'
+    ]
   },
-  'NATO without US': {
-    color: '#3949AB',
-    flag: '🇳🇦',
-    personnel: 1900000,
-    reserve: 2500000,
-    budget: 400,
-    gdpPercent: 1.8,
-    aircraft: 4000,
-    tanks: 6000,
-    naval: 750,
-    nukes: 515,
-    bases: 60,
-    techIndex: 8,
-    population: 650,
+  'Israel': {
+    flag: '🇮🇱',
+    color: '#1971C2',
+    budget: 24.3,
+    gdpPercent: 5.6,
+    active: 170000,
+    reserve: 465000,
+    population: 9000000,
+    aircraft: 601,
+    tanks: 1650,
+    naval: 65,
+    submarines: 5,
+    nukes: 90,
+    internationalBases: 0,
+    domesticBases: 28,
+    tech: 93,
     strengths: [
-      'Broad collective defense framework',
-      'Combined logistical and training infrastructure',
-      'Presence of two nuclear-armed states (France and UK) within membership'
+      'Advanced technology',
+      'Significant combat experience',
+      'Strong intelligence capabilities',
+      'Nuclear capability',
+      'Advanced missile defense'
     ],
     weaknesses: [
-      'Diverse capabilities and force structures leading to fragmentation',
-      'Reliance on US for high-end enablers (e.g., strategic lift, ISR)',
-      'Uneven defense spending among member states'
+      'Small size relative to regional threats',
+      'Limited strategic depth',
+      'Surrounded by potential adversaries'
+    ]
+  },
+  'European Union': {
+    flag: '🇪🇺',
+    color: '#FFD43B',
+    budget: 225,
+    gdpPercent: 1.8,
+    active: 1400000,
+    reserve: 1500000,
+    population: 447000000,
+    aircraft: 2100,
+    tanks: 5000,
+    naval: 550,
+    submarines: 30,
+    nukes: 515,
+    internationalBases: 40,
+    domesticBases: 420,
+    tech: 88,
+    strengths: [
+      'Combined economic power',
+      'Technological capabilities',
+      'Diplomatic influence',
+      'NATO integration'
     ],
-    historicalBudget: [
-      { year: 2018, value: 350 },
-      { year: 2019, value: 360 },
-      { year: 2020, value: 370 },
-      { year: 2021, value: 385 },
-      { year: 2022, value: 400 }
-    ],
-    historicalNukes: [
-      { year: 1990, value: 850 },
-      { year: 2000, value: 600 },
-      { year: 2010, value: 520 },
-      { year: 2020, value: 515 },
-      { year: 2022, value: 515 }
-    ],
-    projections: {
-      budget: [
-        { year: 2023, value: 420 },
-        { year: 2025, value: 450 },
-        { year: 2030, value: 500 },
-        { year: 2035, value: 560 }
-      ],
-      personnel: [
-        { year: 2023, value: 1920000 },
-        { year: 2025, value: 1950000 },
-        { year: 2030, value: 2000000 },
-        { year: 2035, value: 2050000 }
-      ],
-      nukes: [
-        { year: 2023, value: 515 },
-        { year: 2025, value: 510 },
-        { year: 2030, value: 500 },
-        { year: 2035, value: 500 }
-      ]
-    }
+    weaknesses: [
+      'Lack of unified military command',
+      'Varying levels of military investment',
+      'Political differences on defense policy'
+    ]
   }
 };
 
+// Helper functions
 export const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat().format(num);
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K';
+  }
+  return num.toString();
 };
 
-export const getFilteredData = (selectedCountries: string[]) => {
-  return selectedCountries.map(country => ({
-    name: country,
-    flag: militaryData[country].flag,
-    color: militaryData[country].color,
-    ...militaryData[country]
-  }));
+// Data generation functions
+export const getRadarData = (countries: string[]) => {
+  const metrics = ['personnel', 'budget', 'aircraft', 'tanks', 'naval', 'nukes', 'tech'];
+  const displayNames = {
+    personnel: 'Personnel',
+    budget: 'Budget',
+    aircraft: 'Aircraft',
+    tanks: 'Tanks',
+    naval: 'Naval',
+    nukes: 'Nuclear',
+    tech: 'Technology'
+  };
+  
+  // Get max values for each metric to normalize
+  const maxValues: Record<string, number> = {};
+  metrics.forEach(metric => {
+    maxValues[metric] = Math.max(...countries.map(country => militaryData[country]?.[metric] || 0));
+  });
+  
+  // Generate radar data
+  return metrics.map(metric => {
+    const data: any = {
+      metric,
+      displayName: displayNames[metric as keyof typeof displayNames]
+    };
+    
+    // Add normalized values (0-100) for each country
+    countries.slice(0, 3).forEach(country => {
+      if (militaryData[country]) {
+        const value = militaryData[country][metric] || 0;
+        const normalizedValue = maxValues[metric] ? (value / maxValues[metric]) * 100 : 0;
+        data[country] = normalizedValue;
+      }
+    });
+    
+    return data;
+  });
 };
 
-export const getRadarData = (selectedCountries: string[]) => {
-  const limitedCountries = selectedCountries.slice(0, 3);
-  return limitedCountries.map(country => {
-    const data = militaryData[country];
+export const getBudgetData = (countries: string[]) => {
+  return countries.map(country => {
+    if (!militaryData[country]) return null;
+    
     return {
       name: country,
-      displayName: `${data.flag} ${country}`,
-      personnel: Math.log10(data.personnel) * 10,
-      budget: Math.log10(data.budget) * 15,
-      aircraft: Math.log10(data.aircraft) * 20,
-      tanks: Math.log10(data.tanks) * 15,
-      naval: Math.log10(data.naval) * 20,
-      nukes: data.nukes > 0 ? Math.log10(data.nukes) * 20 : 0,
-      tech: data.techIndex * 10,
-      color: data.color
+      budget: militaryData[country].budget,
+      gdpPercent: militaryData[country].gdpPercent,
+      color: militaryData[country].color
     };
-  });
+  }).filter(Boolean);
 };
 
-export const getEquipmentData = (selectedCountries: string[]) => {
-  return getFilteredData(selectedCountries).map(item => ({
-    name: item.name,
-    flag: item.flag,
-    aircraft: item.aircraft,
-    tanks: item.tanks,
-    naval: item.naval,
-    color: item.color
-  }));
-};
-
-export const getBudgetData = (selectedCountries: string[]) => {
-  return getFilteredData(selectedCountries).map(item => ({
-    name: item.name,
-    flag: item.flag,
-    budget: item.budget,
-    gdpPercent: item.gdpPercent,
-    color: item.color
-  }));
-};
-
-export const getPersonnelData = (selectedCountries: string[]) => {
-  return getFilteredData(selectedCountries).map(item => ({
-    name: item.name,
-    flag: item.flag,
-    active: item.personnel,
-    reserve: item.reserve,
-    perCapita: (item.personnel / item.population).toFixed(2),
-    population: item.population,
-    color: item.color
-  }));
-};
-
-export const getNuclearData = (selectedCountries: string[]) => {
-  return getFilteredData(selectedCountries).map(item => ({
-    name: item.name,
-    flag: item.flag,
-    nukes: item.nukes,
-    color: item.color,
-    hasMissiles: item.nukes > 0
-  }));
-};
-
-export const getHistoricalBudgetData = (selectedCountries: string[]) => {
-  const budgetData: any[] = [];
-  
-  selectedCountries.forEach(country => {
-    const countryData = militaryData[country];
-    countryData.historicalBudget.forEach(item => {
-      budgetData.push({
-        year: item.year,
-        [country]: item.value,
-        [`${country}Color`]: countryData.color
-      });
-    });
-  });
-  
-  const groupedByYear: Record<number, any> = {};
-  budgetData.forEach(item => {
-    if (!groupedByYear[item.year]) {
-      groupedByYear[item.year] = { year: item.year };
-    }
-    Object.keys(item).forEach(key => {
-      if (key !== 'year') {
-        groupedByYear[item.year][key] = item[key];
-      }
-    });
-  });
-  
-  return Object.values(groupedByYear);
-};
-
-export const getHistoricalNukesData = (selectedCountries: string[]) => {
-  const nukesData: any[] = [];
-  
-  selectedCountries.forEach(country => {
-    const countryData = militaryData[country];
-    countryData.historicalNukes.forEach(item => {
-      nukesData.push({
-        year: item.year,
-        [country]: item.value,
-        [`${country}Color`]: countryData.color
-      });
-    });
-  });
-  
-  const groupedByYear: Record<number, any> = {};
-  nukesData.forEach(item => {
-    if (!groupedByYear[item.year]) {
-      groupedByYear[item.year] = { year: item.year };
-    }
-    Object.keys(item).forEach(key => {
-      if (key !== 'year') {
-        groupedByYear[item.year][key] = item[key];
-      }
-    });
-  });
-  
-  return Object.values(groupedByYear);
-};
-
-export const getStrengthsAndWeaknesses = (selectedCountries: string[]) => {
-  return selectedCountries.map(country => ({
-    name: country,
-    flag: militaryData[country].flag,
-    strengths: militaryData[country].strengths,
-    weaknesses: militaryData[country].weaknesses,
-    color: militaryData[country].color
-  }));
-};
-
-export const getProjectionData = (selectedCountries: string[]) => {
-  const limitedCountries = selectedCountries.filter(country => 
-    ['United States', 'China', 'Russia', 'European Union'].includes(country)
-  );
-  
-  const projectionYears = [2023, 2025, 2030, 2035];
-  const projectionData: any[] = [];
-  
-  projectionYears.forEach(year => {
-    const yearData: any = { year };
+export const getPersonnelData = (countries: string[]) => {
+  return countries.map(country => {
+    if (!militaryData[country]) return null;
     
-    limitedCountries.forEach(country => {
-      const countryData = militaryData[country];
-      if (countryData.projections) {
-        const budgetEntry = countryData.projections.budget.find(item => item.year === year);
-        if (budgetEntry) {
-          yearData[`${country}Budget`] = budgetEntry.value;
-          yearData[`${country}Color`] = countryData.color;
+    return {
+      name: country,
+      active: militaryData[country].active,
+      reserve: militaryData[country].reserve,
+      perCapita: Math.round((militaryData[country].active / militaryData[country].population) * 1000000),
+      color: militaryData[country].color
+    };
+  }).filter(Boolean);
+};
+
+export const getEquipmentData = (countries: string[]) => {
+  return countries.map(country => {
+    if (!militaryData[country]) return null;
+    
+    return {
+      name: country,
+      aircraft: militaryData[country].aircraft,
+      tanks: militaryData[country].tanks,
+      naval: militaryData[country].naval,
+      color: militaryData[country].color
+    };
+  }).filter(Boolean);
+};
+
+export const getSubmarineData = (countries: string[]) => {
+  return countries.map(country => {
+    if (!militaryData[country]) return null;
+    
+    return {
+      name: country,
+      submarines: militaryData[country].submarines,
+      color: militaryData[country].color
+    };
+  }).filter(Boolean);
+};
+
+export const getInternationalBasesData = (countries: string[]) => {
+  return countries.map(country => {
+    if (!militaryData[country]) return null;
+    
+    return {
+      name: country,
+      internationalBases: militaryData[country].internationalBases,
+      domesticBases: militaryData[country].domesticBases,
+      color: militaryData[country].color
+    };
+  }).filter(Boolean);
+};
+
+export const getNuclearData = (countries: string[]) => {
+  return countries.map(country => {
+    if (!militaryData[country]) return null;
+    
+    return {
+      name: country,
+      nukes: militaryData[country].nukes,
+      hasMissiles: militaryData[country].nukes > 0,
+      color: militaryData[country].color
+    };
+  }).filter(Boolean);
+};
+
+export const getHistoricalBudgetData = (countries: string[]) => {
+  // Sample historical data
+  const years = [2018, 2019, 2020, 2021, 2022];
+  const growthRates: Record<string, number[]> = {
+    'United States': [3.2, 4.5, 2.1, 1.8, 3.7],
+    'China': [8.1, 7.5, 6.6, 7.1, 7.4],
+    'Russia': [3.5, 4.5, -6.6, 2.9, 5.4],
+    'India': [3.1, 6.8, 2.1, 0.9, 13.0],
+    'United Kingdom': [-0.9, 1.4, 2.7, 3.1, 13.8],
+    'France': [1.7, 5.0, 3.9, 4.3, 7.4],
+    'Japan': [2.1, 1.3, 0.8, 7.3, 7.9],
+    'South Korea': [7.0, 8.2, 5.5, 4.4, 4.1],
+    'Germany': [3.5, 6.6, 5.2, 3.2, 10.3],
+    'Israel': [0.7, 1.7, 2.7, 11.3, 12.4],
+    'European Union': [2.1, 3.9, 3.1, 4.2, 6.0]
+  };
+  
+  return years.map(year => {
+    const yearData: Record<string, any> = { year };
+    
+    countries.forEach(country => {
+      if (militaryData[country]) {
+        const baseValue = militaryData[country].budget;
+        const yearIndex = year - 2018;
+        
+        // Calculate historical value based on growth rates
+        let historicalValue = baseValue;
+        for (let i = 4; i >= yearIndex; i--) {
+          historicalValue = historicalValue / (1 + (growthRates[country]?.[i] || 3) / 100);
         }
         
-        const personnelEntry = countryData.projections.personnel.find(item => item.year === year);
-        if (personnelEntry) {
-          yearData[`${country}Personnel`] = personnelEntry.value;
-        }
-        
-        const nukesEntry = countryData.projections.nukes.find(item => item.year === year);
-        if (nukesEntry) {
-          yearData[`${country}Nukes`] = nukesEntry.value;
-        }
+        yearData[country] = Math.round(historicalValue);
       }
     });
     
-    projectionData.push(yearData);
+    return yearData;
   });
+};
+
+export const getHistoricalNukesData = (countries: string[]) => {
+  // Sample historical data for nuclear warheads
+  const years = [1990, 1995, 2000, 2005, 2010, 2015, 2020, 2022];
+  const historicalData: Record<string, number[]> = {
+    'United States': [10500, 8500, 7000, 6000, 5800, 5500, 5500, 5500],
+    'Russia': [27000, 22500, 12000, 8000, 7000, 6500, 6300, 6257],
+    'China': [150, 180, 200, 235, 260, 290, 320, 350],
+    'United Kingdom': [350, 300, 280, 250, 225, 225, 225, 225],
+    'France': [500, 450, 350, 350, 300, 300, 290, 290],
+    'India': [0, 5, 30, 65, 90, 120, 150, 160],
+    'Israel': [50, 60, 70, 80, 80, 85, 90, 90],
+    'European Union': [850, 750, 630, 600, 525, 525, 515, 515]
+  };
   
-  return projectionData;
+  return years.map(year => {
+    const yearData: Record<string, any> = { year };
+    
+    countries.forEach(country => {
+      if (historicalData[country]) {
+        const yearIndex = Math.floor((year - 1990) / 5);
+        const adjustedIndex = Math.min(yearIndex, historicalData[country].length - 1);
+        yearData[country] = historicalData[country][adjustedIndex];
+      }
+    });
+    
+    return yearData;
+  });
+};
+
+export const getStrengthsAndWeaknesses = (countries: string[]) => {
+  return countries.map(country => {
+    if (!militaryData[country]) return null;
+    
+    return {
+      name: country,
+      flag: militaryData[country].flag,
+      strengths: militaryData[country].strengths || [],
+      weaknesses: militaryData[country].weaknesses || []
+    };
+  }).filter(Boolean);
+};
+
+export const getProjectionData = (countries: string[]) => {
+  // Generate projection data for 2023-2035
+  const years = Array.from({ length: 13 }, (_, i) => 2023 + i);
+  
+  // Growth rates per country and metric
+  const growthRates: Record<string, Record<string, number>> = {
+    'United States': { Budget: 2.5, Personnel: -0.5, Nukes: -0.2 },
+    'China': { Budget: 6.0, Personnel: 1.0, Nukes: 3.0 },
+    'Russia': { Budget: 1.5, Personnel: -1.0, Nukes: -0.5 },
+    'India': { Budget: 5.0, Personnel: 1.5, Nukes: 2.0 },
+    'United Kingdom': { Budget: 2.0, Personnel: -1.0, Nukes: 0 },
+    'France': { Budget: 1.8, Personnel: -0.5, Nukes: 0 },
+    'Japan': { Budget: 3.0, Personnel: 0.5, Nukes: 0 },
+    'South Korea': { Budget: 4.0, Personnel: 0.0, Nukes: 0 },
+    'Germany': { Budget: 3.5, Personnel: 0.5, Nukes: 0 },
+    'Israel': { Budget: 3.0, Personnel: 1.0, Nukes: 1.0 },
+    'European Union': { Budget: 2.5, Personnel: -0.2, Nukes: 0 }
+  };
+  
+  return years.map(year => {
+    const yearData: Record<string, any> = { year };
+    
+    countries.forEach(country => {
+      if (militaryData[country]) {
+        // Calculate projections for each metric
+        ['Budget', 'Personnel', 'Nukes'].forEach(metric => {
+          const baseValue = metric === 'Budget' 
+            ? militaryData[country].budget 
+            : metric === 'Personnel' 
+              ? militaryData[country].active 
+              : militaryData[country].nukes;
+          
+          const growthRate = growthRates[country]?.[metric] || 0;
+          const yearsPassed = year - 2023;
+          const projectedValue = Math.round(baseValue * Math.pow(1 + growthRate / 100, yearsPassed));
+          
+          yearData[`${country}${metric}`] = projectedValue;
+        });
+      }
+    });
+    
+    return yearData;
+  });
 };
 
 export const getPlaceholderStoryChips = (): StoryChip[] => {
   return [
     {
-      id: 'economic-recession',
-      title: 'Global Economic Recession',
-      description: 'Major economic downturn impacts military budgets worldwide',
-      icon: 'trending-down',
+      id: 'chip1',
+      title: 'US-China Trade War Escalation',
+      description: 'Increased tariffs and economic sanctions between the US and China',
       category: 'economic',
+      icon: 'dollar-sign',
+      impact: {
+        country: 'China',
+        metric: 'budget',
+        effect: 'increase',
+        amount: 15,
+        startYear: 2024
+      }
+    },
+    {
+      id: 'chip2',
+      title: 'European Defense Initiative',
+      description: 'EU increases military cooperation and joint defense spending',
+      category: 'geopolitical',
+      icon: 'shield',
+      impact: {
+        country: 'European Union',
+        metric: 'budget',
+        effect: 'increase',
+        amount: 25,
+        startYear: 2025
+      }
+    },
+    {
+      id: 'chip3',
+      title: 'Russian Military Modernization',
+      description: 'Russia launches new program to modernize aging equipment',impact: {
+        country: 'Russia',
+        metric: 'budget',
+        effect: 'increase',
+        amount: 20,
+        startYear: 2024
+      }
+    },
+    {
+      id: 'chip4',
+      title: 'US Military Drawdown',
+      description: 'Reduction in overseas deployments and shift to technological focus',
+      category: 'geopolitical',
+      icon: 'trending-down',
       impact: {
         country: 'United States',
+        metric: 'personnel',
+        effect: 'decrease',
+        amount: 12,
+        startYear: 2026
+      }
+    },
+    {
+      id: 'chip5',
+      title: 'Chinese Naval Expansion',
+      description: 'Accelerated shipbuilding program and blue water navy development',
+      category: 'technological',
+      icon: 'shield-alert',
+      impact: {
+        country: 'China',
+        metric: 'budget',
+        effect: 'increase',
+        amount: 18,
+        startYear: 2025
+      }
+    },
+    {
+      id: 'chip6',
+      title: 'Regional Conflict in Asia',
+      description: 'Limited military engagement requiring increased readiness',
+      category: 'conflict',
+      icon: 'swords',
+      impact: {
+        country: 'China',
+        metric: 'personnel',
+        effect: 'increase',
+        amount: 15,
+        startYear: 2027
+      }
+    },
+    {
+      id: 'chip7',
+      title: 'AI Defense Revolution',
+      description: 'Breakthrough in military AI applications changes force structure',
+      category: 'technological',
+      icon: 'cpu',
+      impact: {
+        country: 'United States',
+        metric: 'personnel',
+        effect: 'decrease',
+        amount: 20,
+        startYear: 2028
+      }
+    },
+    {
+      id: 'chip8',
+      title: 'Nuclear Arms Reduction Treaty',
+      description: 'Major powers agree to reduce nuclear arsenals',
+      category: 'geopolitical',
+      icon: 'file-text',
+      impact: {
+        country: 'Russia',
+        metric: 'nukes',
+        effect: 'decrease',
+        amount: 30,
+        startYear: 2026
+      }
+    },
+    {
+      id: 'chip9',
+      title: 'Global Economic Recession',
+      description: 'Severe economic downturn affects military spending worldwide',
+      category: 'economic',
+      icon: 'trending-down',
+      impact: {
+        country: 'European Union',
         metric: 'budget',
         effect: 'decrease',
         amount: 15,
@@ -617,343 +714,249 @@ export const getPlaceholderStoryChips = (): StoryChip[] => {
       }
     },
     {
-      id: 'ai-breakthrough',
-      title: 'AI Military Breakthrough',
-      description: 'Revolutionary AI systems reduce need for personnel',
-      icon: 'cpu',
+      id: 'chip10',
+      title: 'Hypersonic Weapons Deployment',
+      description: 'New generation of unstoppable missiles changes strategic balance',
       category: 'technological',
-      impact: {
-        country: 'China',
-        metric: 'personnel',
-        effect: 'decrease',
-        amount: 10,
-        startYear: 2028
-      }
-    },
-    {
-      id: 'regional-conflict',
-      title: 'Major Regional Conflict',
-      description: 'Conflict requires increased military mobilization',
-      icon: 'swords',
-      category: 'conflict',
+      icon: 'rocket',
       impact: {
         country: 'Russia',
-        metric: 'personnel',
-        effect: 'increase',
-        amount: 20,
-        startYear: 2026
-      }
-    },
-    {
-      id: 'arms-treaty',
-      title: 'New Strategic Arms Treaty',
-      description: 'Major powers agree to reduce nuclear arsenals',
-      icon: 'file-text',
-      category: 'geopolitical',
-      impact: {
-        country: 'United States',
-        metric: 'nukes',
-        effect: 'decrease',
-        amount: 25,
-        startYear: 2027
-      }
-    },
-    {
-      id: 'defense-alliance',
-      title: 'European Defense Integration',
-      description: 'EU establishes unified military command structure',
-      icon: 'shield',
-      category: 'geopolitical',
-      impact: {
-        country: 'European Union',
         metric: 'budget',
         effect: 'increase',
-        amount: 30,
-        startYear: 2025
+        amount: 25,
+        startYear: 2027
       }
     }
   ];
 };
 
-export const getEnhancedEquipmentData = () => {
-  const result: Record<string, any> = {};
-  
-  Object.keys(militaryData).forEach(country => {
-    const countryData = militaryData[country];
-    
-    result[country] = {
-      tanks: {
-        quantity: countryData.tanks || 0,
-        growth: getEstimatedGrowth(countryData, 'tanks'),
-        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
-        mainModels: getMainEquipmentModels('tanks', country),
-        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
-        operationalRate: 50 + Math.round(countryData.gdpPercent * 10),
-        yearlyBudget: Math.round(countryData.budget * 0.1),
-      },
-      aircraft: {
-        quantity: countryData.aircraft || 0,
-        growth: getEstimatedGrowth(countryData, 'aircraft'),
-        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
-        mainModels: getMainEquipmentModels('aircraft', country),
-        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
-        operationalRate: 55 + Math.round(countryData.gdpPercent * 10),
-        yearlyBudget: Math.round(countryData.budget * 0.2),
-      },
-      ships: {
-        quantity: countryData.naval || 0,
-        growth: getEstimatedGrowth(countryData, 'ships'),
-        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
-        mainModels: getMainEquipmentModels('ships', country),
-        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
-        operationalRate: 60 + Math.round(countryData.gdpPercent * 8),
-        yearlyBudget: Math.round(countryData.budget * 0.15),
-      },
-      airDefense: {
-        quantity: Math.round((countryData.budget / 10) * (countryData.techIndex / 8)),
-        growth: getEstimatedGrowth(countryData, 'airDefense'),
-        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
-        mainModels: getMainEquipmentModels('airDefense', country),
-        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
-        operationalRate: 65 + Math.round(countryData.gdpPercent * 7),
-        yearlyBudget: Math.round(countryData.budget * 0.07),
-      },
-      missiles: {
-        quantity: Math.round(countryData.nukes * 10) + Math.round(countryData.aircraft * 0.2),
-        growth: getEstimatedGrowth(countryData, 'missiles'),
-        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
-        mainModels: getMainEquipmentModels('missiles', country),
-        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
-        operationalRate: 70 + Math.round(countryData.gdpPercent * 6),
-        yearlyBudget: Math.round(countryData.budget * 0.08),
-      },
-      helicopters: {
-        quantity: Math.round(countryData.aircraft / 3),
-        growth: getEstimatedGrowth(countryData, 'helicopters'),
-        qualityRating: Math.min(10, Math.max(1, Math.round(countryData.techIndex))),
-        mainModels: getMainEquipmentModels('helicopters', country),
-        modernPercentage: Math.min(100, Math.round(countryData.techIndex * 10)),
-        operationalRate: 55 + Math.round(countryData.gdpPercent * 9),
-        yearlyBudget: Math.round(countryData.budget * 0.06),
-      },
-      historicalData: generateHistoricalEquipmentData(country),
-    };
-    
-    calculateEquipmentRankings(result);
-  });
-  
-  return result;
-};
-
-function getEstimatedGrowth(countryData: MilitaryData, equipmentType: string): number {
-  if (!countryData.historicalBudget || countryData.historicalBudget.length < 2) {
-    return 0;
-  }
-  
-  const recentBudgets = countryData.historicalBudget.slice(-5);
-  if (recentBudgets.length < 2) return 0;
-  
-  const oldestBudget = recentBudgets[0].value;
-  const latestBudget = recentBudgets[recentBudgets.length - 1].value;
-  
-  const budgetGrowthRate = ((latestBudget / oldestBudget) - 1) * 100;
-  
-  const growthFactors: Record<string, number> = {
-    tanks: 0.6,
-    aircraft: 0.8,
-    ships: 0.5,
-    airDefense: 0.9,
-    missiles: 0.7,
-    helicopters: 0.6
-  };
-  
-  return parseFloat((budgetGrowthRate * (growthFactors[equipmentType] || 0.7)).toFixed(1));
-}
-
-function getMainEquipmentModels(category: string, country: string): string[] {
-  const modelsByCategory: Record<string, Record<string, string[]>> = {
-    tanks: {
-      'United States': ['M1A2 Abrams', 'M1A1 Abrams', 'M2 Bradley'],
-      'Russia': ['T-90', 'T-72B3', 'T-80U', 'T-14 Armata'],
-      'China': ['Type 99A', 'Type 96', 'Type 15'],
-      'European Union': ['Leopard 2A7', 'Challenger 2', 'Leclerc'],
-      'default': ['MBT-2000', 'T-72', 'AMX-30']
-    },
-    aircraft: {
-      'United States': ['F-35 Lightning II', 'F-22 Raptor', 'F-15 Eagle', 'F-16 Fighting Falcon'],
-      'Russia': ['Su-35', 'Su-57', 'MiG-29', 'Tu-160'],
-      'China': ['J-20', 'J-16', 'J-10C', 'H-6K'],
-      'European Union': ['Eurofighter Typhoon', 'Rafale', 'Gripen E'],
-      'default': ['F-16', 'MiG-29', 'Su-30']
-    },
-    ships: {
-      'United States': ['Nimitz-class Carrier', 'Arleigh Burke-class Destroyer', 'Virginia-class Submarine'],
-      'Russia': ['Admiral Kuznetsov', 'Kirov-class Battlecruiser', 'Borei-class Submarine'],
-      'China': ['Type 055 Destroyer', 'Type 003 Aircraft Carrier', 'Type 095 Submarine'],
-      'European Union': ['Queen Elizabeth-class Carrier', 'FREMM Frigate', 'Type 212 Submarine'],
-      'default': ['Frigate', 'Corvette', 'Patrol Vessel']
-    },
-    airDefense: {
-      'United States': ['Patriot PAC-3', 'THAAD', 'Avenger'],
-      'Russia': ['S-400 Triumf', 'S-350', 'Pantsir-S1'],
-      'China': ['HQ-9', 'HQ-19', 'HQ-16'],
-      'European Union': ['SAMP/T', 'IRIS-T SL', 'Skyguard'],
-      'default': ['SA-8', 'SA-15', 'Portable SAM']
-    },
-    missiles: {
-      'United States': ['Tomahawk', 'Minuteman III ICBM', 'Trident D5'],
-      'Russia': ['Iskander', 'Kalibr', 'RS-28 Sarmat'],
-      'China': ['DF-41', 'DF-26', 'YJ-18'],
-      'European Union': ['Storm Shadow/SCALP', 'Exocet', 'ASMP'],
-      'default': ['Short-range ballistic missile', 'Cruise missile']
-    },
-    helicopters: {
-      'United States': ['AH-64 Apache', 'UH-60 Black Hawk', 'CH-47 Chinook'],
-      'Russia': ['Ka-52 Alligator', 'Mi-28 Havoc', 'Mi-24 Hind'],
-      'China': ['Z-10', 'Z-19', 'Z-8'],
-      'European Union': ['Tiger', 'NH90', 'AW101'],
-      'default': ['Mi-17', 'AW109', 'UH-1']
-    }
-  };
-  
-  const models = modelsByCategory[category]?.[country] || modelsByCategory[category]?.['default'] || ['Generic Model'];
-  
-  const count = Math.min(3, models.length);
-  return models.slice(0, count);
-}
-
-function generateHistoricalEquipmentData(country: string) {
-  const countryData = militaryData[country];
-  if (!countryData.historicalBudget) return [];
-  
-  const years = countryData.historicalBudget.map(item => item.year);
-  const budgetValues = countryData.historicalBudget.map(item => item.value);
-  
-  return years.map((year, index) => {
-    const yearBudget = budgetValues[index];
-    const budgetRatio = yearBudget / countryData.budget;
-    
-    return {
-      year,
-      tanks: Math.round(countryData.tanks * budgetRatio * 0.9),
-      aircraft: Math.round(countryData.aircraft * budgetRatio * 0.95),
-      ships: Math.round(countryData.naval * budgetRatio * 0.97),
-      airDefense: Math.round((countryData.budget / 10) * (countryData.techIndex / 8) * budgetRatio * 0.92),
-      missiles: Math.round(countryData.nukes * 10 * budgetRatio * 0.93),
-      helicopters: Math.round(countryData.aircraft / 3 * budgetRatio * 0.91),
-    };
-  });
-}
-
-function calculateEquipmentRankings(equipmentData: Record<string, any>) {
-  const categories = ['tanks', 'aircraft', 'ships', 'airDefense', 'missiles', 'helicopters'];
-  
-  categories.forEach(category => {
-    const countriesWithEquipment = Object.keys(equipmentData)
-      .filter(country => equipmentData[country][category].quantity > 0);
-    
-    const sortedByQuantity = [...countriesWithEquipment]
-      .sort((a, b) => equipmentData[b][category].quantity - equipmentData[a][category].quantity);
-    
-    sortedByQuantity.forEach((country, index) => {
-      equipmentData[country][category].globalRank = index + 1;
-      
-      equipmentData[country][category].powerRating = 
-        (equipmentData[country][category].quantity * equipmentData[country][category].qualityRating) / 10;
-    });
-  });
-}
-
+// Equipment data
 export const equipmentCategories = [
-  { 
-    id: 'tanks', 
-    name: 'Tanks', 
+  {
+    id: 'tanks',
+    name: 'Tanks',
     icon: 'TankIcon',
-    color: '#f97316', // Orange (brand color)
-    description: 'Main battle tanks and armored fighting vehicles',
+    color: '#4CAF50',
     capabilities: [
       'Ground warfare dominance',
       'Infantry support',
-      'Territorial control'
+      'Breakthrough operations',
+      'Territorial control',
+      'Defensive fortification',
+      'Urban combat (with limitations)'
     ]
   },
-  { 
-    id: 'aircraft', 
-    name: 'Combat Aircraft', 
+  {
+    id: 'aircraft',
+    name: 'Aircraft',
     icon: 'PlaneIcon',
-    color: '#3b82f6', // Blue
-    description: 'Fighter jets, bombers, and support aircraft',
+    color: '#2196F3',
     capabilities: [
       'Air superiority',
       'Strategic bombing',
-      'Reconnaissance'
+      'Close air support',
+      'Reconnaissance',
+      'Electronic warfare',
+      'Rapid deployment'
     ]
   },
-  { 
-    id: 'ships', 
-    name: 'Naval Vessels', 
+  {
+    id: 'ships',
+    name: 'Naval Vessels',
     icon: 'ShipIcon',
-    color: '#06b6d4', // Cyan
-    description: 'Aircraft carriers, destroyers, submarines, and support vessels',
+    color: '#3F51B5',
     capabilities: [
-      'Maritime dominance',
+      'Sea control',
       'Power projection',
-      'Naval blockade capability'
+      'Amphibious operations',
+      'Maritime security',
+      'Carrier strike groups',
+      'Naval blockades'
     ]
   },
-  { 
-    id: 'airDefense', 
-    name: 'Air Defense', 
-    icon: 'RadarIcon',
-    color: '#8b5cf6', // Purple
-    description: 'Surface-to-air missile systems and anti-aircraft installations',
+  {
+    id: 'submarines',
+    name: 'Submarines',
+    icon: 'ShipIcon',
+    color: '#1A237E',
     capabilities: [
-      'Airspace denial',
-      'Critical infrastructure protection',
-      'Counter-stealth capability'
+      'Stealth operations',
+      'Anti-ship warfare',
+      'Nuclear deterrence',
+      'Intelligence gathering',
+      'Special forces deployment',
+      'Strategic strike capability'
     ]
   },
-  { 
-    id: 'missiles', 
-    name: 'Missile Systems', 
+  {
+    id: 'missiles',
+    name: 'Missiles',
     icon: 'RocketIcon',
-    color: '#ef4444', // Red
-    description: 'Ballistic missiles, cruise missiles, and tactical missile systems',
+    color: '#F44336',
     capabilities: [
       'Strategic deterrence',
-      'Long-range strike capability',
-      'Precision targeting'
+      'Precision strikes',
+      'Air defense',
+      'Anti-ship capabilities',
+      'Tactical battlefield support',
+      'Stand-off attack capability'
     ]
   },
-  { 
-    id: 'helicopters', 
-    name: 'Military Helicopters', 
+  {
+    id: 'helicopters',
+    name: 'Helicopters',
     icon: 'HelicopterIcon',
-    color: '#10b981', // Green
-    description: 'Attack helicopters, transport helicopters, and utility rotorcraft',
+    color: '#FF9800',
     capabilities: [
+      'Troop transport',
       'Close air support',
-      'Rapid deployment',
-      'Search and rescue'
+      'Medical evacuation',
+      'Anti-tank operations',
+      'Special operations',
+      'Naval operations'
     ]
   }
 ];
 
-export const getSubmarineData = (selectedCountries: string[]) => {
-  return getFilteredData(selectedCountries).map(item => ({
-    name: item.name,
-    flag: item.flag,
-    submarines: item.submarines || 0,
-    color: item.color
-  }));
+export const getEnhancedEquipmentData = () => {
+  // This function would normally fetch data from an API
+  // For demo purposes, we'll generate some enhanced data
+  
+  const enhancedData: Record<string, any> = {};
+  
+  Object.keys(militaryData).forEach(country => {
+    enhancedData[country] = {
+      // Tanks data
+      tanks: {
+        quantity: militaryData[country].tanks,
+        qualityRating: Math.min(10, Math.round((Math.random() * 3) + (militaryData[country].tech / 15))),
+        powerRating: Math.round(militaryData[country].tanks * (Math.random() * 0.3 + 0.7)),
+        growth: (Math.random() * 10 - 5).toFixed(1),
+        mainModels: generateMainModels(country, 'tanks'),
+        globalRank: Math.floor(Math.random() * 20) + 1,
+        modernPercentage: Math.floor(Math.random() * 40) + 60,
+        operationalRate: Math.floor(Math.random() * 20) + 80,
+        yearlyBudget: Math.round(militaryData[country].budget * (0.15 + Math.random() * 0.1))
+      },
+      
+      // Aircraft data
+      aircraft: {
+        quantity: militaryData[country].aircraft,
+        qualityRating: Math.min(10, Math.round((Math.random() * 3) + (militaryData[country].tech / 15))),
+        powerRating: Math.round(militaryData[country].aircraft * (Math.random() * 0.3 + 0.7)),
+        growth: (Math.random() * 8 - 3).toFixed(1),
+        mainModels: generateMainModels(country, 'aircraft'),
+        globalRank: Math.floor(Math.random() * 20) + 1,
+        modernPercentage: Math.floor(Math.random() * 40) + 60,
+        operationalRate: Math.floor(Math.random() * 15) + 85,
+        yearlyBudget: Math.round(militaryData[country].budget * (0.25 + Math.random() * 0.15))
+      },
+      
+      // Ships data
+      ships: {
+        quantity: militaryData[country].naval,
+        qualityRating: Math.min(10, Math.round((Math.random() * 3) + (militaryData[country].tech / 15))),
+        powerRating: Math.round(militaryData[country].naval * (Math.random() * 0.3 + 0.7) * 3),
+        growth: (Math.random() * 6 - 2).toFixed(1),
+        mainModels: generateMainModels(country, 'ships'),
+        globalRank: Math.floor(Math.random() * 20) + 1,
+        modernPercentage: Math.floor(Math.random() * 40) + 60,
+        operationalRate: Math.floor(Math.random() * 10) + 90,
+        yearlyBudget: Math.round(militaryData[country].budget * (0.2 + Math.random() * 0.1))
+      },
+      
+      // Submarines data
+      submarines: {
+        quantity: militaryData[country].submarines || Math.floor(militaryData[country].naval / 10),
+        qualityRating: Math.min(10, Math.round((Math.random() * 3) + (militaryData[country].tech / 15))),
+        powerRating: Math.round((militaryData[country].submarines || Math.floor(militaryData[country].naval / 10)) * (Math.random() * 0.3 + 0.7) * 5),
+        growth: (Math.random() * 4 - 1).toFixed(1),
+        mainModels: generateMainModels(country, 'submarines'),
+        globalRank: Math.floor(Math.random() * 20) + 1,
+        modernPercentage: Math.floor(Math.random() * 40) + 60,
+        operationalRate: Math.floor(Math.random() * 10) + 90,
+        yearlyBudget: Math.round(militaryData[country].budget * (0.1 + Math.random() * 0.05))
+      },
+      
+      // Missiles data
+      missiles: {
+        quantity: Math.round(militaryData[country].aircraft * 0.8 + militaryData[country].naval * 5),
+        qualityRating: Math.min(10, Math.round((Math.random() * 3) + (militaryData[country].tech / 15))),
+        powerRating: Math.round((militaryData[country].aircraft * 0.8 + militaryData[country].naval * 5) * (Math.random() * 0.3 + 0.7)),
+        growth: (Math.random() * 12 - 2).toFixed(1),
+        mainModels: generateMainModels(country, 'missiles'),
+        globalRank: Math.floor(Math.random() * 20) + 1,
+        modernPercentage: Math.floor(Math.random() * 40) + 60,
+        operationalRate: Math.floor(Math.random() * 5) + 95,
+        yearlyBudget: Math.round(militaryData[country].budget * (0.15 + Math.random() * 0.1))
+      },
+      
+      // Helicopters data
+      helicopters: {
+        quantity: Math.round(militaryData[country].aircraft * 0.4),
+        qualityRating: Math.min(10, Math.round((Math.random() * 3) + (militaryData[country].tech / 15))),
+        powerRating: Math.round(militaryData[country].aircraft * 0.4 * (Math.random() * 0.3 + 0.7)),
+        growth: (Math.random() * 8 - 3).toFixed(1),
+        mainModels: generateMainModels(country, 'helicopters'),
+        globalRank: Math.floor(Math.random() * 20) + 1,
+        modernPercentage: Math.floor(Math.random() * 40) + 60,
+        operationalRate: Math.floor(Math.random() * 15) + 85,
+        yearlyBudget: Math.round(militaryData[country].budget * (0.1 + Math.random() * 0.05))
+      },
+      
+      // Historical data (simplified)
+      historicalData: [
+        { year: 2018, tanks: Math.round(militaryData[country].tanks * 0.85), aircraft: Math.round(militaryData[country].aircraft * 0.9) },
+        { year: 2019, tanks: Math.round(militaryData[country].tanks * 0.9), aircraft: Math.round(militaryData[country].aircraft * 0.92) },
+        { year: 2020, tanks: Math.round(militaryData[country].tanks * 0.95), aircraft: Math.round(militaryData[country].aircraft * 0.95) },
+        { year: 2021, tanks: Math.round(militaryData[country].tanks * 0.98), aircraft: Math.round(militaryData[country].aircraft * 0.98) },
+        { year: 2022, tanks: militaryData[country].tanks, aircraft: militaryData[country].aircraft }
+      ]
+    };
+  });
+  
+  return enhancedData;
 };
 
-export const getInternationalBasesData = (selectedCountries: string[]) => {
-  return getFilteredData(selectedCountries).map(item => ({
-    name: item.name,
-    flag: item.flag,
-    internationalBases: item.internationalBases || 0,
-    domesticBases: item.bases - (item.internationalBases || 0),
-    color: item.color
-  }));
-};
+// Helper function to generate realistic equipment model names
+function generateMainModels(country: string, equipmentType: string): string[] {
+  const models: Record<string, Record<string, string[]>> = {
+    'United States': {
+      tanks: ['M1A2 Abrams', 'M1A2C SEPv3', 'M1A2D SEPv4'],
+      aircraft: ['F-35 Lightning II', 'F-22 Raptor', 'F-15EX Eagle II'],
+      ships: ['Arleigh Burke-class', 'Nimitz-class', 'Gerald R. Ford-class'],
+      submarines: ['Virginia-class', 'Ohio-class', 'Columbia-class'],
+      missiles: ['Tomahawk', 'SM-6', 'JASSM-ER'],
+      helicopters: ['AH-64E Apache', 'UH-60M Black Hawk', 'CH-47F Chinook']
+    },
+    'Russia': {
+      tanks: ['T-90M', 'T-14 Armata', 'T-72B3M'],
+      aircraft: ['Su-57', 'Su-35S', 'MiG-35'],
+      ships: ['Admiral Gorshkov-class', 'Slava-class', 'Kirov-class'],
+      submarines: ['Borei-class', 'Yasen-class', 'Kilo-class'],
+      missiles: ['Kalibr', 'Iskander', 'Avangard'],
+      helicopters: ['Ka-52 Alligator', 'Mi-28NM', 'Mi-26']
+    },
+    'China': {
+      tanks: ['Type 99A', 'Type 15', 'VT-4'],
+      aircraft: ['J-20', 'J-16', 'J-10C'],
+      ships: ['Type 055', 'Type 052D', 'Liaoning-class'],
+      submarines: ['Type 096', 'Type 095', 'Type 094A'],
+      missiles: ['DF-17', 'DF-21D', 'YJ-18'],
+      helicopters: ['Z-20', 'Z-10', 'Z-19']
+    }
+  };
+  
+  // Default models for countries not specifically defined
+  const defaultModels: Record<string, string[]> = {
+    tanks: ['Main Battle Tank', 'Light Tank', 'Heavy Tank'],
+    aircraft: ['Multirole Fighter', 'Strike Aircraft', 'Interceptor'],
+    ships: ['Destroyer', 'Frigate', 'Aircraft Carrier'],
+    submarines: ['Attack Submarine', 'Ballistic Missile Submarine', 'Diesel-Electric Submarine'],
+    missiles: ['Cruise Missile', 'Ballistic Missile', 'Anti-Ship Missile'],
+    helicopters: ['Attack Helicopter', 'Transport Helicopter', 'Utility Helicopter']
+  };
+  
+  // Return country-specific models if available, otherwise use default
+  return models[country]?.[equipmentType] || defaultModels[equipmentType] || ['Unknown Model'];
+}

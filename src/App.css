@@ -1,4 +1,3 @@
-
 /* App-wide styles */
 
 #root {
@@ -6,21 +5,6 @@
   margin: 0 auto;
   padding: 0;
   text-align: center;
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
 }
 
 /* Story elements styling */
@@ -74,76 +58,4 @@
   overflow: hidden;
   background-color: rgba(30, 30, 36, 0.4);
   border: 1px solid rgba(249, 115, 22, 0.1);
-}
-
-/* Scrollbar utilities */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari, Opera */
-}
-
-/* Equipment visualization styles */
-.icon-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
-/* Mobile specific styles */
-@media (max-width: 768px) {
-  .geo-heading {
-    font-size: 1.75rem !important;
-  }
-  
-  .geo-subheading {
-    font-size: 1rem !important;
-  }
-  
-  .data-value {
-    font-size: 2.5rem !important;
-  }
-  
-  .mobile-sidebar-backdrop {
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(4px);
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    transition: opacity 0.3s ease-out;
-  }
-  
-  .mobile-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 85%;
-    max-width: 320px;
-    z-index: 40;
-  }
-  
-  /* Hide the sidebar when not open */
-  .mobile-sidebar-hidden {
-    display: none;
-  }
-  
-  /* Storytelling mobile optimizations */
-  .story-chip {
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  /* Timeline adjustments for mobile */
-  .timeline-ruler .text-xs {
-    font-size: 0.65rem;
-  }
-  
-  /* Equipment visualization mobile optimizations */
-  .icon-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }

@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { 
-  ShieldAlert, Search, Menu, X, ChevronRight, Globe, 
-  BarChart3, Settings, Share, Download, Info, 
-  Maximize2, RefreshCw, Clock, LineChart, Briefcase, Laptop
+  ShieldAlert, Search, Menu, X, ChevronRight, 
+  BarChart3, Share, Download, 
+  Maximize2, RefreshCw, LineChart, Briefcase, Laptop
 } from 'lucide-react';
 import { useDebouncedState } from '@/hooks/use-debounced-state';
 import CountrySelector from './CountrySelector';
@@ -15,28 +14,30 @@ import StorytellingArea from './StorytellingArea';
 import EquipmentVisualization from './EquipmentVisualization';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { StatCategory } from '@/lib/military-data';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useMilitaryData } from '@/contexts/MilitaryDataContext';
+import { staggerContainer, slideUp, mobileMenuAnimation } from '@/lib/animation-variants';
 
 type ViewMode = 'comparison' | 'storytelling' | 'equipment';
 
 const MilitaryDashboard: React.FC = () => {
-  // Main state
-  const [selectedCountries, setSelectedCountries] = useState<string[]>(
-    ['United States', 'China', 'Russia', 'European Union']
-  );
-  const [activeStat, setActiveStat] = useState<StatCategory>('overview');
+  // Get shared state from context
+  const { 
+    selectedCountries, setSelectedCountries,
+    activeStat, setActiveStat,
+    selectedYear, setSelectedYear,
+    compareYears, setCompareYears,
+    comparisonYear, setComparisonYear,
+    isDataLoading, lastUpdated, refreshData
+  } = useMilitaryData();
+  
+  // Local state
   const [viewMode, setViewMode] = useState<ViewMode>('comparison');
   const [searchTerm, useDebouncedSearchTerm, rawSearchTerm] = useDebouncedState('', 300);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
-  const [compareYears, setCompareYears] = useState<boolean>(false);
-  const [comparisonYear, setComparisonYear] = useState<number>(2020);
   
   // Refs for DOM interactions
   const dashboardRef = useRef<HTMLDivElement>(null);
@@ -67,9 +68,8 @@ const MilitaryDashboard: React.FC = () => {
     }
   }, [isMobile]);
 
-  // Simulate data refresh
+  // Simulate data refresh with animation
   const handleRefreshData = async () => {
-    setIsRefreshing(true);
     // Animate refresh icon
     const animateRotation = async () => {
       for (let i = 0; i < 2; i++) {
@@ -87,13 +87,12 @@ const MilitaryDashboard: React.FC = () => {
       }
     };
     
-    await animateRotation();
-    setLastUpdated(new Date());
-    setIsRefreshing(false);
+    animateRotation();
+    await refreshData();
     
     toast({
       title: "Data refreshed",
-      description: `Military data updated as of ${new Date().toLocaleString()}`,
+      description: `Military data updated as of ${lastUpdated.toLocaleString()}`,
     });
   };
 
@@ -125,15 +124,17 @@ const MilitaryDashboard: React.FC = () => {
 
   // Export data as JSON
   const handleExportData = () => {
-    // Simulate export functionality
-    const dummyData = {
+    // Prepare export data
+    const exportData = {
       timestamp: new Date().toISOString(),
       countries: selectedCountries,
       category: activeStat,
-      viewMode: viewMode
+      viewMode: viewMode,
+      year: selectedYear,
+      comparisonYear: compareYears ? comparisonYear : null
     };
     
-    const dataStr = JSON.stringify(dummyData, null, 2);
+    const dataStr = JSON.stringify(exportData, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
     
@@ -152,40 +153,12 @@ const MilitaryDashboard: React.FC = () => {
 
   // Handle sharing functionality
   const handleShareDashboard = () => {
-    // In a real app, this would generate a shareable link or open a share dialog
     navigator.clipboard.writeText(window.location.href);
     
     toast({
       title: "Link copied",
       description: "Dashboard URL copied to clipboard"
     });
-  };
-
-  // Container animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { 
-        duration: 0.5,
-        when: "beforeChildren",
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5 }
-    },
-    exit: {
-      y: -10,
-      opacity: 0,
-      transition: { duration: 0.3 }
-    }
   };
 
   // Handle mobile sidebar toggle
@@ -234,7 +207,7 @@ const MilitaryDashboard: React.FC = () => {
     <motion.div 
       ref={dashboardRef}
       className="min-h-screen bg-background"
-      variants={containerVariants}
+      variants={staggerContainer}
       initial="hidden"
       animate={isLoaded ? "visible" : "hidden"}
     >
@@ -257,9 +230,9 @@ const MilitaryDashboard: React.FC = () => {
               bg-sidebar-background text-sidebar-foreground border-r border-border 
               flex flex-col
             `}
-            initial={isMobile ? { x: "-100%" } : { x: 0 }}
-            animate={isMobile ? { x: sidebarOpen ? 0 : "-100%" } : { x: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            variants={isMobile ? mobileMenuAnimation : undefined}
+            initial={isMobile ? "hidden" : false}
+            animate={isMobile ? (sidebarOpen ? "visible" : "hidden") : false}
           >
             {/* Sidebar Header */}
             <div className="p-4 border-b border-border flex items-center justify-between">
@@ -404,12 +377,12 @@ const MilitaryDashboard: React.FC = () => {
                   size="sm"
                   className="flex-1 flex items-center justify-center gap-1 bg-primary/10 border-primary/30 text-primary btn-skeuomorphic"
                   onClick={handleRefreshData}
-                  disabled={isRefreshing}
+                  disabled={isDataLoading}
                 >
                   <motion.div style={{ rotate: refreshRotation }}>
                     <RefreshCw className="w-4 h-4" />
                   </motion.div>
-                  <span className="text-xs">{isRefreshing ? 'Updating...' : 'Refresh Data'}</span>
+                  <span className="text-xs">{isDataLoading ? 'Updating...' : 'Refresh Data'}</span>
                 </Button>
               </div>
               
@@ -507,10 +480,10 @@ const MilitaryDashboard: React.FC = () => {
                 {viewMode === 'comparison' && (
                   <motion.div
                     key="comparison"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
+                    variants={slideUp}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
                     className="flex flex-col md:flex-row gap-6 h-full"
                   >
                     <ChartSection 
@@ -535,10 +508,10 @@ const MilitaryDashboard: React.FC = () => {
                 {viewMode === 'storytelling' && (
                   <motion.div
                     key="storytelling"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
+                    variants={slideUp}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
                     className="h-full"
                   >
                     <StorytellingArea />
@@ -548,10 +521,10 @@ const MilitaryDashboard: React.FC = () => {
                 {viewMode === 'equipment' && (
                   <motion.div
                     key="equipment"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
+                    variants={slideUp}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
                     className="h-full"
                   >
                     <EquipmentVisualization selectedCountries={selectedCountries} />

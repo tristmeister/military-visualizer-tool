@@ -55,87 +55,15 @@
     font-family: 'Prompt', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
 
+@layer components {
   .glassmorphism {
     @apply bg-card/90 backdrop-blur-md border border-border/30 shadow-lg;
   }
 
   .card-hover {
     @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
-  }
-
-  .grid-fade-in > * {
-    @apply opacity-0;
-    animation: fade-in-grid 0.5s ease-out forwards;
-  }
-
-  .grid-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
-  .grid-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
-  .grid-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
-  .grid-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
-  .grid-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
-  .grid-fade-in > *:nth-child(6) { animation-delay: 0.6s; }
-
-  @keyframes fade-in-grid {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .sidebar-option {
-    @apply relative overflow-hidden rounded-lg transition-all duration-300 ease-in-out;
-  }
-
-  .sidebar-option::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-300;
-    z-index: -1;
-  }
-
-  .sidebar-option:hover::before {
-    @apply opacity-100 from-primary/5 to-primary/10;
-  }
-
-  .sidebar-option.active::before {
-    @apply opacity-100 from-primary/10 to-primary/20;
-  }
-
-  .chart-container {
-    @apply transition-all duration-500 ease-in-out;
-  }
-
-  .chart-container:hover {
-    @apply shadow-lg;
-    transform: scale(1.01);
-  }
-  
-  .status-badge {
-    @apply text-xs py-1 px-2 rounded-md font-medium;
-  }
-  
-  .status-badge.warning {
-    @apply bg-destructive/90 text-destructive-foreground;
-  }
-  
-  .geo-heading {
-    @apply text-4xl font-bold leading-none tracking-tight text-foreground;
-  }
-  
-  .geo-subheading {
-    @apply text-xl font-medium text-muted-foreground;
-  }
-  
-  .data-value {
-    @apply text-5xl font-bold text-foreground;
-  }
-  
-  .data-label {
-    @apply text-sm text-muted-foreground;
   }
 
   .btn-skeuomorphic {
@@ -200,25 +128,103 @@
       0 0.14em 0.35em -0.1em rgba(0, 0, 0, 0.4);
   }
 
-  @media (max-width: 768px) {
-    .geo-heading {
-      @apply text-2xl;
-    }
-    
-    .geo-subheading {
-      @apply text-sm;
-    }
-    
-    .chart-container {
-      min-height: 200px;
-    }
-    
-    .btn-skeuomorphic {
-      @apply py-1.5;
-    }
+  .geo-heading {
+    @apply text-4xl font-bold leading-none tracking-tight text-foreground;
+  }
+  
+  .geo-subheading {
+    @apply text-xl font-medium text-muted-foreground;
+  }
+  
+  .data-value {
+    @apply text-5xl font-bold text-foreground;
+  }
+  
+  .data-label {
+    @apply text-sm text-muted-foreground;
+  }
 
-    .story-chip {
-      @apply text-xs py-1.5 px-2;
+  /* Mobile sidebar styles */
+  .mobile-sidebar-backdrop {
+    @apply bg-black/80 backdrop-blur-sm fixed inset-0 z-30 transition-opacity duration-300;
+  }
+  
+  .mobile-sidebar {
+    @apply fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] z-40;
+  }
+  
+  .mobile-sidebar-hidden {
+    @apply hidden;
+  }
+
+  /* Scrollbar utilities */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Equipment visualization styles */
+  .icon-grid {
+    @apply grid grid-cols-5 gap-2;
+  }
+}
+
+@layer utilities {
+  .grid-fade-in > * {
+    @apply opacity-0;
+    animation: fade-in-grid 0.5s ease-out forwards;
+  }
+
+  .grid-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
+  .grid-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
+  .grid-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
+  .grid-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
+  .grid-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
+  .grid-fade-in > *:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes fade-in-grid {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .geo-heading {
+    @apply text-2xl;
+  }
+  
+  .geo-subheading {
+    @apply text-sm;
+  }
+  
+  .data-value {
+    @apply text-3xl;
+  }
+  
+  .chart-container {
+    min-height: 200px;
+  }
+  
+  .icon-grid {
+    @apply grid-cols-4;
+  }
+  
+  .story-chip {
+    @apply text-xs py-1.5 px-2 w-full max-w-full;
+  }
+  
+  .timeline-ruler .text-xs {
+    font-size: 0.65rem;
   }
 }

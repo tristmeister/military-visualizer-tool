@@ -1,35 +1,24 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ShieldAlert } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ShieldAlert } from "lucide-react";
-
-const NotFound = () => {
-  const location = useLocation();
-  const isMobile = useIsMobile();
-
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-  }, [location.pathname]);
-
+const NotFound: React.FC = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-      <div className="text-center glassmorphism p-6 md:p-10 rounded-xl w-[90%] max-w-md">
-        <div className="flex justify-center mb-4">
-          <ShieldAlert className="w-12 h-12 text-primary" />
-        </div>
-        <h1 className="geo-heading mb-4">404</h1>
-        <p className="geo-subheading mb-6">Page not found</p>
-        <div className="mt-6">
-          <a 
-            href="/" 
-            className="btn-skeuomorphic bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 inline-block"
-          >
-            Return to Dashboard
-          </a>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+      <div className="text-center max-w-md">
+        <ShieldAlert className="w-16 h-16 text-primary mx-auto mb-6" />
+        <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
+        <p className="text-muted-foreground mb-8">
+          The military intelligence you're looking for could not be located. It may have been classified or moved to a different sector.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button asChild>
+            <Link to="/dashboard">Return to Dashboard</Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link to="/landing">Go to Landing Page</Link>
+          </Button>
         </div>
       </div>
     </div>
