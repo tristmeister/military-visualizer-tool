@@ -8,8 +8,10 @@ export type MilitaryData = {
   aircraft: number;
   tanks: number;
   naval: number;
+  submarines?: number;
   nukes: number;
   bases: number;
+  internationalBases?: number;
   techIndex: number;
   population: number; // in millions
   strengths: string[];
@@ -46,51 +48,65 @@ export const militaryData: CountryData = {
   'United States': {
     color: '#1E88E5',
     flag: '🇺🇸',
-    personnel: 1400000,
+    personnel: 1374000,
     reserve: 800000,
-    budget: 800.7,
+    budget: 877,
     gdpPercent: 3.5,
-    aircraft: 13247,
+    aircraft: 2000,
     tanks: 5500,
-    naval: 490,
-    nukes: 5550,
-    bases: 750,
+    naval: 416,
+    submarines: 68,
+    nukes: 5428,
+    bases: 4000,
+    internationalBases: 750,
     techIndex: 10,
-    population: 331.9,
-    strengths: ['Advanced technology', 'Global force projection', 'Strongest naval force', 'Air superiority'],
-    weaknesses: ['High operational costs', 'Political constraints', 'Overextended commitments'],
+    population: 338.3,
+    strengths: [
+      'Global power projection with extensive network of overseas bases and aircraft carrier strike groups',
+      'Cutting-edge military technology (stealth aircraft, precision weapons, C4ISR) and robust R&D ecosystem',
+      'Large defense budget (~$877 billion) enabling well-funded training, logistics, and force readiness',
+      'Strong nuclear triad (land, sea, air) with ~5,428 warheads ensuring strategic deterrence',
+      'Alliances and global partnerships (NATO and others) multiply force effectiveness and strategic reach'
+    ],
+    weaknesses: [
+      'Overextended deployments and global commitments can strain personnel and resources over time (e.g. long wars in Iraq/Afghanistan)',
+      'Rising costs of advanced equipment and maintenance (high-tech forces are expensive to sustain)',
+      'Challenges in adapting to asymmetric/guerrilla warfare despite superior conventional power (as seen in protracted insurgencies)',
+      'Domestic political divisions and budget uncertainty can impact long-term defense planning and procurement efficiency',
+      'Relatively modest troop numbers vs. rivals (1.38 million active) require force multipliers; heavy reliance on high-tech can be a vulnerability if technologies are countered'
+    ],
     historicalBudget: [
-      { year: 2018, value: 700 },
+      { year: 2018, value: 649 },
       { year: 2019, value: 732 },
-      { year: 2020, value: 750 },
-      { year: 2021, value: 778 },
-      { year: 2022, value: 800.7 }
+      { year: 2020, value: 778 },
+      { year: 2021, value: 801 },
+      { year: 2022, value: 877 }
     ],
     historicalNukes: [
-      { year: 1990, value: 10000 },
-      { year: 2000, value: 8000 },
-      { year: 2010, value: 6700 },
-      { year: 2020, value: 5800 },
-      { year: 2022, value: 5550 }
+      { year: 1990, value: 10904 },
+      { year: 2000, value: 10577 },
+      { year: 2010, value: 5066 },
+      { year: 2020, value: 3750 },
+      { year: 2022, value: 3708 }
     ],
     projections: {
       budget: [
-        { year: 2023, value: 820 },
-        { year: 2025, value: 850 },
-        { year: 2030, value: 900 },
-        { year: 2035, value: 950 }
+        { year: 2023, value: 916 },
+        { year: 2025, value: 950 },
+        { year: 2030, value: 1100 },
+        { year: 2035, value: 1250 }
       ],
       personnel: [
-        { year: 2023, value: 1400000 },
-        { year: 2025, value: 1450000 },
-        { year: 2030, value: 1500000 },
-        { year: 2035, value: 1550000 }
+        { year: 2023, value: 1370000 },
+        { year: 2025, value: 1380000 },
+        { year: 2030, value: 1400000 },
+        { year: 2035, value: 1420000 }
       ],
       nukes: [
-        { year: 2023, value: 5500 },
-        { year: 2025, value: 5400 },
-        { year: 2030, value: 5200 },
-        { year: 2035, value: 5000 }
+        { year: 2023, value: 5244 },
+        { year: 2025, value: 5000 },
+        { year: 2030, value: 4800 },
+        { year: 2035, value: 4500 }
       ]
     }
   },
@@ -99,100 +115,128 @@ export const militaryData: CountryData = {
     flag: '🇨🇳',
     personnel: 2035000,
     reserve: 510000,
-    budget: 229.0,
-    gdpPercent: 1.7,
-    aircraft: 3260,
-    tanks: 5800,
-    naval: 777,
+    budget: 292,
+    gdpPercent: 1.6,
+    aircraft: 1900,
+    tanks: 5000,
+    naval: 720,
+    submarines: 61,
     nukes: 350,
-    bases: 12,
-    techIndex: 7,
+    bases: 3000,
+    internationalBases: 5,
+    techIndex: 8,
     population: 1412,
-    strengths: ['Massive manpower', 'Growing naval capability', 'Missile technology', 'Cyber capabilities'],
-    weaknesses: ['Limited combat experience', 'Technology gaps', 'Regional focus'],
+    strengths: [
+      'World\'s largest active military manpower (~2.0 million) provides substantial ground forces',
+      'Rapid military modernization and industrial expansion – defense budget grew ~5%+ annually for 27 years',
+      'Largest navy in the world by number of warships (~355 battle-force ships) and a growing blue-water capability',
+      'Robust missile forces (e.g. DF-series ballistic missiles and anti-ship missiles) creating strong A2/AD (area-denial) envelope in Asia',
+      'Nuclear arsenal increasing quickly (from ~400 warheads to an expected 1,000+ by 2030) to enhance strategic deterrence'
+    ],
+    weaknesses: [
+      'Limited recent combat experience – the PLA has not fought a major war in over 40 years, raising uncertainty about operational effectiveness',
+      'Still lags top-tier technology in some areas (e.g. jet engines, undersea warfare); overall military tech level trails the U.S.',
+      'Nuclear stockpile remains relatively small (~350-400 warheads) compared to U.S. and Russia, though growing',
+      'Geopolitical constraints: few formal allies or forward bases (only a handful of overseas bases) limit global reach',
+      'Command and control and joint interoperability are improving but unproven at scale – transitioning from a quantity-focused force to a high-tech, integrated force is ongoing'
+    ],
     historicalBudget: [
-      { year: 2018, value: 175 },
-      { year: 2019, value: 185 },
-      { year: 2020, value: 196 },
-      { year: 2021, value: 209 },
-      { year: 2022, value: 229 }
+      { year: 2018, value: 250 },
+      { year: 2019, value: 261 },
+      { year: 2020, value: 252 },
+      { year: 2021, value: 293 },
+      { year: 2022, value: 292 }
     ],
     historicalNukes: [
-      { year: 1990, value: 100 },
-      { year: 2000, value: 180 },
+      { year: 1990, value: 232 },
+      { year: 2000, value: 232 },
       { year: 2010, value: 240 },
-      { year: 2020, value: 320 },
-      { year: 2022, value: 350 }
+      { year: 2020, value: 400 },
+      { year: 2022, value: 410 }
     ],
     projections: {
       budget: [
-        { year: 2023, value: 250 },
-        { year: 2025, value: 280 },
-        { year: 2030, value: 350 },
-        { year: 2035, value: 420 }
+        { year: 2023, value: 310 },
+        { year: 2025, value: 360 },
+        { year: 2030, value: 736 },
+        { year: 2035, value: 900 }
       ],
       personnel: [
-        { year: 2023, value: 2050000 },
-        { year: 2025, value: 2100000 },
-        { year: 2030, value: 2200000 },
-        { year: 2035, value: 2300000 }
+        { year: 2023, value: 2000000 },
+        { year: 2025, value: 2000000 },
+        { year: 2030, value: 1950000 },
+        { year: 2035, value: 1900000 }
       ],
       nukes: [
-        { year: 2023, value: 380 },
-        { year: 2025, value: 450 },
-        { year: 2030, value: 600 },
-        { year: 2035, value: 750 }
+        { year: 2023, value: 410 },
+        { year: 2025, value: 600 },
+        { year: 2030, value: 1000 },
+        { year: 2035, value: 1500 }
       ]
     }
   },
   'Russia': {
     color: '#5E35B1',
     flag: '🇷🇺',
-    personnel: 900000,
+    personnel: 1000000,
     reserve: 2000000,
-    budget: 61.7,
+    budget: 86.4,
     gdpPercent: 4.1,
-    aircraft: 4173,
-    tanks: 12420,
-    naval: 605,
-    nukes: 6257,
-    bases: 21,
-    techIndex: 7.5,
-    population: 143.4,
-    strengths: ['Nuclear arsenal', 'Land forces', 'Air defense systems', 'Special operations'],
-    weaknesses: ['Economic constraints', 'Aging equipment', 'Command structure', 'Logistics issues'],
+    aircraft: 810,
+    tanks: 12566,
+    naval: 533,
+    submarines: 65,
+    nukes: 5899,
+    bases: 1000,
+    internationalBases: 30,
+    techIndex: 6,
+    population: 144.7,
+    strengths: [
+      'World\'s largest tank fleet (~12,500) and heavy artillery force, giving it massive ground firepower',
+      'Extensive nuclear arsenal (~5,889 total warheads) – the largest in the world – providing parity with the U.S. in strategic weapons',
+      'Strong integrated air defense systems (e.g. S-400, S-300) covering key regions, and advanced missile technology (hypersonic glide vehicles, anti-ship missiles)',
+      'Significant combat experience in recent conflicts (e.g. operations in Syria, and ongoing war in Ukraine) – a battle-hardened officer corps (though at high cost)',
+      'Large domestic arms industry inherited from Soviet era – capable of producing a full spectrum of military hardware (tanks, jets, submarines, etc.), albeit with mixed modernity'
+    ],
+    weaknesses: [
+      'Limited defense budget (~$86 billion) – only a fraction of U.S./China spending – constrains procurement and R&D',
+      'Aging military equipment and maintenance problems; reliance on outdated Soviet-era platforms – many aircraft and ships are not modernized, and high-loss rates in Ukraine highlight these shortfalls',
+      'Economic and industrial base is relatively weak (Russia\'s GDP and tech sector are much smaller than China\'s/US\'s), undermining long-term military competitiveness',
+      'Over-reliance on its nuclear arsenal for great-power status, indicating a gap in conventional capabilities – conventional forces have struggled against well-equipped opposition despite numerical strength',
+      'Logistical and organizational issues – as seen in the 2022 Ukraine campaign – including poor supply lines and conscript-heavy units, which reduce overall efficiency and effectiveness in sustained operations'
+    ],
     historicalBudget: [
-      { year: 2018, value: 66 },
-      { year: 2019, value: 64 },
-      { year: 2020, value: 62 },
-      { year: 2021, value: 62 },
-      { year: 2022, value: 61.7 }
+      { year: 2018, value: 61.4 },
+      { year: 2019, value: 65.1 },
+      { year: 2020, value: 64.0 },
+      { year: 2021, value: 65.9 },
+      { year: 2022, value: 86.4 }
     ],
     historicalNukes: [
-      { year: 1990, value: 12000 },
-      { year: 2000, value: 10000 },
-      { year: 2010, value: 8000 },
-      { year: 2020, value: 6800 },
-      { year: 2022, value: 6257 }
+      { year: 1990, value: 37000 },
+      { year: 2000, value: 21500 },
+      { year: 2010, value: 12000 },
+      { year: 2020, value: 6375 },
+      { year: 2022, value: 6200 }
     ],
     projections: {
       budget: [
-        { year: 2023, value: 65 },
-        { year: 2025, value: 70 },
-        { year: 2030, value: 85 },
-        { year: 2035, value: 100 }
+        { year: 2023, value: 109 },
+        { year: 2025, value: 130 },
+        { year: 2030, value: 150 },
+        { year: 2035, value: 170 }
       ],
       personnel: [
-        { year: 2023, value: 920000 },
-        { year: 2025, value: 950000 },
-        { year: 2030, value: 1000000 },
-        { year: 2035, value: 1050000 }
+        { year: 2023, value: 1000000 },
+        { year: 2025, value: 1500000 },
+        { year: 2030, value: 1500000 },
+        { year: 2035, value: 1500000 }
       ],
       nukes: [
-        { year: 2023, value: 6200 },
-        { year: 2025, value: 6100 },
-        { year: 2030, value: 6000 },
-        { year: 2035, value: 5900 }
+        { year: 2023, value: 5899 },
+        { year: 2025, value: 6000 },
+        { year: 2030, value: 6300 },
+        { year: 2035, value: 6500 }
       ]
     }
   },
@@ -951,3 +995,22 @@ export const equipmentCategories = [
     ]
   }
 ];
+
+export const getSubmarineData = (selectedCountries: string[]) => {
+  return getFilteredData(selectedCountries).map(item => ({
+    name: item.name,
+    flag: item.flag,
+    submarines: item.submarines || 0,
+    color: item.color
+  }));
+};
+
+export const getInternationalBasesData = (selectedCountries: string[]) => {
+  return getFilteredData(selectedCountries).map(item => ({
+    name: item.name,
+    flag: item.flag,
+    internationalBases: item.internationalBases || 0,
+    domesticBases: item.bases - (item.internationalBases || 0),
+    color: item.color
+  }));
+};

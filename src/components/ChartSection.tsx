@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Treemap, LineChart, Line } from 'recharts';
-import { formatNumber, getRadarData, getBudgetData, getPersonnelData, getEquipmentData, getNuclearData, getHistoricalBudgetData, getHistoricalNukesData, militaryData } from '@/lib/military-data';
+import { formatNumber, getRadarData, getBudgetData, getPersonnelData, getEquipmentData, getNuclearData, getHistoricalBudgetData, getHistoricalNukesData, militaryData, getSubmarineData, getInternationalBasesData } from '@/lib/military-data';
 import { StatCategory } from '@/lib/military-data';
-import { Plane, Shield, Anchor, AlertTriangle } from 'lucide-react';
+import { Plane, Shield, Anchor, AlertTriangle, Submarine, Globe } from 'lucide-react';
 
 interface ChartSectionProps {
   selectedCountries: string[];
@@ -416,6 +417,8 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
 
   const renderEquipmentCharts = () => {
     const equipmentData = getEquipmentData(selectedCountries);
+    const submarineData = getSubmarineData(selectedCountries);
+    const basesData = getInternationalBasesData(selectedCountries);
 
     return (
       <motion.div 
@@ -539,6 +542,88 @@ const ChartSection: React.FC<ChartSectionProps> = ({ selectedCountries, activeSt
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6 chart-container">
+            {renderCardHeader("Submarine Fleet")}
+            <div className="flex items-center justify-center mb-3">
+              <Submarine className="w-10 h-10 text-blue-500" />
+            </div>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={submarineData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(120, 120, 120, 0.2)" />
+                  <XAxis 
+                    type="number" 
+                    tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                    axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                  />
+                  <YAxis 
+                    type="category" 
+                    dataKey="name" 
+                    tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                    axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                  />
+                  <Tooltip 
+                    formatter={(value: any) => [formatNumber(Number(value)), 'Submarines']}
+                    contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
+                  />
+                  <Legend />
+                  <Bar 
+                    dataKey="submarines" 
+                    name="Submarine Fleet" 
+                    fill="#0088fe"
+                    animationDuration={1500}
+                  >
+                    {submarineData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="glassmorphism rounded-2xl p-6 chart-container">
+            {renderCardHeader("International Military Bases")}
+            <div className="flex items-center justify-center mb-3">
+              <Globe className="w-10 h-10 text-blue-500" />
+            </div>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={basesData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(120, 120, 120, 0.2)" />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                    axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                  />
+                  <YAxis 
+                    tick={{ fill: 'rgba(80, 80, 80, 0.8)' }}
+                    axisLine={{ stroke: 'rgba(120, 120, 120, 0.3)' }}
+                  />
+                  <Tooltip 
+                    formatter={(value: any) => [formatNumber(Number(value)), 'Bases']}
+                    contentStyle={{ borderRadius: '8px', background: 'rgba(255, 255, 255, 0.9)' }}
+                  />
+                  <Legend />
+                  <Bar 
+                    dataKey="internationalBases" 
+                    name="International Bases" 
+                    fill="#8884d8"
+                    animationDuration={1500}
+                  />
+                  <Bar 
+                    dataKey="domesticBases" 
+                    name="Domestic Bases" 
+                    fill="#82ca9d"
+                    animationDuration={1500}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
