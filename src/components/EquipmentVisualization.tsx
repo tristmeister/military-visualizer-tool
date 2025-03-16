@@ -2,14 +2,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  TankIcon, 
-  PlaneIcon, 
-  ShipIcon, 
-  ShieldIcon, 
-  RocketIcon, 
-  HelicopterIcon,
-  RadarIcon,
-  CrosshairIcon,
   ChevronRight,
   ChevronDown,
   Info,
@@ -20,6 +12,16 @@ import {
   Zap,
   Star,
   TrendingUp
+} from 'lucide-react';
+import { 
+  TankIcon, 
+  PlaneIcon, 
+  ShipIcon, 
+  ShieldIcon, 
+  RocketIcon, 
+  HelicopterIcon,
+  RadarIcon,
+  CrosshairIcon
 } from '@/components/ui/custom-icons';
 import { 
   Tooltip, 
@@ -60,6 +62,23 @@ import {
   Tooltip as RechartsTooltip,
   Cell
 } from 'recharts';
+
+// Icon component mapping to safely retrieve icons
+const iconComponents = {
+  TankIcon,
+  PlaneIcon,
+  ShipIcon,
+  ShieldIcon,
+  RocketIcon,
+  HelicopterIcon,
+  RadarIcon,
+  CrosshairIcon
+};
+
+// Helper function to get the icon component safely
+const getIconComponent = (iconName) => {
+  return iconComponents[iconName] || ShieldIcon; // Fallback to ShieldIcon if not found
+};
 
 interface EquipmentVisualizationProps {
   selectedCountries: string[];
@@ -318,8 +337,8 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
       <div className="border-b border-border overflow-x-auto no-scrollbar">
         <div className="flex p-1">
           {equipmentCategories.map(category => {
-            // Dynamically get the icon component based on the icon name string
-            const IconComponent = eval(category.icon);
+            // Safely get the icon component
+            const IconComponent = getIconComponent(category.icon);
             
             return (
               <button
@@ -466,7 +485,8 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
               {comparisonCountries.map(country => {
                 const gridData = calculateIconGrid(country, activeCategory);
                 const countryColor = militaryData[country]?.color || '#666';
-                const IconComponent = eval(activeCategoryObj?.icon || 'PlaneIcon');
+                // Safely get the icon component
+                const IconComponent = getIconComponent(activeCategoryObj?.icon || 'ShieldIcon');
                 
                 return (
                   <motion.div 
@@ -712,7 +732,8 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
               {comparisonCountries.map(country => {
                 const gridData = calculateIconGrid(country, activeCategory);
                 const countryColor = militaryData[country]?.color || '#666';
-                const IconComponent = eval(activeCategoryObj?.icon || 'PlaneIcon');
+                // Safely get the icon component
+                const IconComponent = getIconComponent(activeCategoryObj?.icon || 'ShieldIcon');
                 
                 return (
                   <motion.div 
@@ -725,7 +746,7 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
                     <div className="p-4 border-b border-border" style={{ backgroundColor: `${countryColor}10` }}>
                       <div className="flex items-center justify-between">
                         <h3 className="text-base font-medium flex items-center">
-                          <span className="mr-2 text-lg">{militaryData[country]?.flag}</span>
+                          <span className="mr-2 text-lg">{militaryData[country]?.flag || ''}</span>
                           {country}
                         </h3>
                         <IconComponent className="w-5 h-5" style={{ color: countryColor }} />
@@ -804,7 +825,7 @@ const EquipmentVisualization: React.FC<EquipmentVisualizationProps> = ({
                           ${gridData.yearlyBudget} billion
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          ({Math.round(gridData.yearlyBudget / militaryData[country].budget * 100)}% of defense budget)
+                          ({Math.round(gridData.yearlyBudget / (militaryData[country]?.budget || 1) * 100)}% of defense budget)
                         </div>
                       </div>
                     </div>
