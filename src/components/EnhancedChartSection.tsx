@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LineChart, BarChart3, PieChart, Activity, 
   Download, Share, Maximize2, Info, FileBarChart,
-  ChevronDown, Layers, PanelRight, PanelLeft
+  ChevronDown, Layers, PanelRight, PanelLeft,
+  Users, DollarSign, Shield, Zap, Clock
 } from 'lucide-react';
 import { 
   Card, 
@@ -60,10 +60,8 @@ const EnhancedChartSection: React.FC<EnhancedChartSectionProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<string>('all');
   
-  // Get filtered data for selected countries
   const filteredData = getFilteredData(selectedCountries);
   
-  // Chart section config based on active stat
   const chartConfig = {
     overview: {
       title: "Overall Military Strength",
@@ -135,7 +133,6 @@ const EnhancedChartSection: React.FC<EnhancedChartSectionProps> = ({
   
   const currentConfig = chartConfig[activeStat];
 
-  // Handle exporting data
   const handleExportData = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -147,17 +144,14 @@ const EnhancedChartSection: React.FC<EnhancedChartSectionProps> = ({
     }, 800);
   };
 
-  // Toggle fullscreen mode
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
-    // In a real implementation, this would handle actual fullscreen behavior
     toast({
       title: isFullscreen ? "Exited fullscreen" : "Entered fullscreen",
       description: `Chart view is now ${isFullscreen ? 'normal' : 'fullscreen'}`
     });
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -187,13 +181,10 @@ const EnhancedChartSection: React.FC<EnhancedChartSectionProps> = ({
     }
   };
 
-  // Helper to get color or default
   const getCountryColor = (country: string) => {
     return militaryData[country]?.color || "#888888";
   };
 
-  // Currently displayed chart component based on active stat
-  // In a real implementation, this would render actual chart components
   const CurrentChart = () => (
     <div className="relative aspect-[4/3] sm:aspect-[16/9] w-full flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden">
       <ChartPlaceholder activeStat={activeStat} selectedCountries={selectedCountries} />
@@ -555,7 +546,6 @@ const EnhancedChartSection: React.FC<EnhancedChartSectionProps> = ({
   );
 };
 
-// Chart placeholder component - in a real implementation this would be actual charts
 const ChartPlaceholder = ({ activeStat, selectedCountries }: { activeStat: StatCategory, selectedCountries: string[] }) => {
   return (
     <div className="w-full h-full flex items-center justify-center">
