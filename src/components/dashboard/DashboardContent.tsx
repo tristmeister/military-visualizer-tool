@@ -6,11 +6,12 @@ import StrengthsWeaknessesPanel from '@/components/StrengthsWeaknessesPanel';
 import StorytellingArea from '@/components/StorytellingArea';
 import EquipmentVisualization from '@/components/EquipmentVisualization';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { StatCategory } from '@/lib/military-data';
 
 interface DashboardContentProps {
   viewMode: 'comparison' | 'storytelling' | 'equipment';
   selectedCountries: string[];
-  activeStat: string;
+  activeStat: StatCategory;
   showAnalysis: boolean;
 }
 

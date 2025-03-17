@@ -1,6 +1,6 @@
 
 import React, { useRef } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useTransform, MotionValue } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import DashboardSidebar from './DashboardSidebar';
@@ -9,9 +9,9 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
-  scrollYProgress: React.MotionValue<number>;
-  headerHeight: React.MotionValue<number>;
-  headerOpacity: React.MotionValue<number>;
+  scrollYProgress: MotionValue<number>;
+  headerHeight: MotionValue<number>;
+  headerOpacity: MotionValue<number>;
   handleScroll: (e: React.UIEvent<HTMLDivElement>) => void;
 }
 
